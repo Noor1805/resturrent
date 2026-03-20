@@ -111,7 +111,7 @@ const ScrollSequence = ({ isEntered }) => {
   }, [isEntered]);
 
   const animateText = () => {
-      // Independent Typography Reveal
+      // Independent Typography 
       if (!textContainerRef.current) return;
       
       const titleChars = textContainerRef.current.querySelectorAll('.title-char');
