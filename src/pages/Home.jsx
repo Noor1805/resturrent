@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import IntroOverlay from '../components/sections/IntroOverlay';
-import ScrollSequence from '../components/sections/ScrollSequence';
+import Hero from '../components/sections/Hero';
+import SignatureDishes from '../components/sections/SignatureDishes';
+import ChefSection from '../components/sections/ChefSection';
+import ReservationBanner from '../components/sections/ReservationBanner';
+import MenuPreview from '../components/sections/MenuPreview';
+import Ambiance from '../components/sections/Ambiance';
+import InstaReels from '../components/sections/InstaReels';
+import Reviews from '../components/sections/Reviews';
+import Footer from '../components/sections/Footer';
 import Preloader from '../components/ui/Preloader';
 import { useLayout } from '../components/layout/Layout';
 
@@ -11,31 +19,36 @@ const Home = () => {
   const { setIsFrameVisible } = useLayout();
 
   useEffect(() => {
-     // Hide Navbar/Footer initially
      setIsFrameVisible(false);
   }, [setIsFrameVisible]);
 
   const handleEnter = () => {
       setIsEntered(true);
-      // Show Navbar/Footer after entering
       setIsFrameVisible(true);
   };
 
   return (
-    <main className="relative overflow-hidden bg-black">
+    <main className="relative bg-black w-full overflow-x-hidden">
       <AnimatePresence>
         {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
       </AnimatePresence>
 
       {!isLoading && !isEntered && <IntroOverlay onEnter={handleEnter} />}
       
-      {/* Mount ScrollSequence but keep it hidden/inactive until entered to ensure DOM is ready */}
-      {!isLoading && (
-          <div className={isEntered ? "opacity-100 transition-opacity duration-1000" : "opacity-0 h-0 overflow-hidden"}>
-             <ScrollSequence isEntered={isEntered} />
-          </div>
+      {/* Standard Sections Start Immediately After Entering */}
+      {isEntered && (
+         <div className="flex flex-col">
+            <Hero isEntered={isEntered} />
+            <SignatureDishes />
+            <ReservationBanner />
+            <ChefSection />
+            <MenuPreview />
+            <Ambiance />
+            <InstaReels />
+            <Reviews />
+            <Footer />
+         </div>
       )}
-
     </main>
   );
 };

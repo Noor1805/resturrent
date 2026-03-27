@@ -25,18 +25,18 @@ const Navbar = () => {
           OBSIDIAN
         </Link>
         
-        <ul className="hidden md:flex gap-8 items-center">
+        <ul className="hidden md:flex gap-8 items-center cursor-pointer">
           {['Home', 'Menu', 'Story', 'Reservations'].map((item) => (
-            <li key={item}>
-              <Link to="/" className="text-xs uppercase tracking-[0.2em] text-gray-300 hover:text-gold-400 transition-colors duration-300 relative group">
+            <li key={item} className="relative group">
+              <Link to="/" className="text-[10px] uppercase tracking-[0.2em] text-white/60 group-hover:text-gold-400 transition-colors duration-300">
                 {item}
-                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold-400 transition-all duration-300 group-hover:w-full"></span>
               </Link>
+              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold-400 transition-all duration-300 group-hover:w-full"></span>
             </li>
           ))}
         </ul>
 
-        <button className="hidden md:block px-6 py-2 border border-white/20 text-xs uppercase tracking-widest text-white hover:bg-gold-500 hover:border-gold-500 hover:text-black transition-all duration-500">
+        <button className="hidden md:block px-6 py-2 border border-white/20 text-[10px] uppercase tracking-widest text-white hover:bg-gold-500 hover:border-gold-500 hover:text-black transition-all duration-400">
           Book Now
         </button>
 
