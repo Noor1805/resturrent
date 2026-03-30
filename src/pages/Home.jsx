@@ -33,21 +33,22 @@ const Home = () => {
         {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
       </AnimatePresence>
 
-      {!isLoading && !isEntered && <IntroOverlay onEnter={handleEnter} />}
-      
-      {/* Standard Sections Start Immediately After Entering */}
-      {isEntered && (
+      {!isLoading && (
          <div className="flex flex-col">
             <Hero isEntered={isEntered} />
-            <SignatureDishes />
-            <ReservationBanner />
+            <SignatureDishes isEntered={isEntered} />
             <ChefSection />
             <MenuPreview />
+            <ReservationBanner />
             <Ambiance />
             <InstaReels />
             <Reviews />
             <Footer />
          </div>
+      )}
+
+      {!isLoading && !isEntered && (
+        <IntroOverlay onEnter={handleEnter} />
       )}
     </main>
   );

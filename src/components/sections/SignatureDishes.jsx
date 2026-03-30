@@ -1,4 +1,5 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef, useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -10,7 +11,7 @@ const dishes = [
     name: "Truffle Caviar Pasta",
     desc: "Handmade linguine, aged parmesan, fresh black truffle shavings and premium sturgeon caviar.",
     price: "$85",
-    img: "/images/dish1.png",
+    img: "https://res.cloudinary.com/dicb5gkab/image/upload/v1774725786/ChatGPT_Image_Mar_29_2026_12_49_56_AM_pt5mpd.png",
     align: "left"
   },
   {
@@ -18,7 +19,7 @@ const dishes = [
     name: "Wagyu Tomahawk",
     desc: "A5 Grade Wagyu, smoked sea salt, rosemary infusion, and 24k gold leaf finishing.",
     price: "$210",
-    img: "/images/dish2.png",
+    img: "https://res.cloudinary.com/dicb5gkab/image/upload/v1774725717/ChatGPT_Image_Mar_29_2026_12_50_00_AM_askqkw.png",
     align: "right"
   },
   {
@@ -26,30 +27,60 @@ const dishes = [
     name: "Gold Leaf Lobster",
     desc: "Butter-poached lobster tail wrapped in 24k edible gold with micro-greens and saffron emulsion.",
     price: "$150",
-    img: "/images/dish3.png",
+    img: "https://res.cloudinary.com/dicb5gkab/image/upload/v1774727854/ChatGPT_Image_Mar_29_2026_01_26_18_AM-Photoroom_xox4wr.png",
     align: "left"
   }
 ];
 
-const SignatureDishes = () => {
+const SignatureDishes = ({ isEntered }) => {
   const containerRef = useRef(null);
   const sectionTitleRef = useRef(null);
+  const headingRef = useRef(null);
   const dishRefs = useRef([]);
+
+  // Devacia-style scroll reveal for "Chef's" — characters go white/30 → gold
+  const chefChars = "Chef's".split("");
+  const [activeCharIndex, setActiveCharIndex] = useState(-1);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!headingRef.current) return;
+      const { top, height } = headingRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const scrollProgress = (windowHeight / 1.3 - top) / (height + windowHeight / 3);
+      const clamped = Math.max(0, Math.min(1, scrollProgress));
+      setActiveCharIndex(Math.floor(clamped * chefChars.length));
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [chefChars.length]);
+
+  // Refresh ScrollTrigger when layout is fully established (after Hero appears)
+  useEffect(() => {
+    if (isEntered) {
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100); 
+    }
+  }, [isEntered]);
 
   useLayoutEffect(() => {
     let ctx = gsap.context(() => {
-      // Title Animation
+      // Title Block Entrance Animation
       gsap.from(sectionTitleRef.current, {
         scrollTrigger: {
           trigger: sectionTitleRef.current,
-          start: "top 80%",
+          start: "top 85%",
           toggleActions: "play none none reverse"
         },
-        y: 100,
+        y: 80,
         opacity: 0,
-        duration: 1.5,
+        duration: 2,
         ease: "power4.out"
       });
+
+      // (Chef's text reveal is handled by scroll listener + CSS transitions, not GSAP)
 
       // Dishes Animation
       dishRefs.current.forEach((el, index) => {
@@ -57,40 +88,81 @@ const SignatureDishes = () => {
         
         const img = el.querySelector('.dish-img');
         const content = el.querySelector('.dish-content');
-        const bgText = el.querySelector('.bg-text');
+        const bgNum = el.querySelector('.bg-number');
 
         // Image Parallax & Reveal
         gsap.fromTo(img, 
           { 
-            y: 100, 
+            y: 120, 
             opacity: 0,
-            scale: 0.8,
-            rotate: isLeft ? -5 : 5
+            scale: 0.9,
+            rotate: isLeft ? -3 : 3
           },
           {
             y: 0,
             opacity: 1,
             scale: 1,
             rotate: 0,
-            duration: 2,
+            duration: 2.5,
             ease: "expo.out",
             scrollTrigger: {
               trigger: el,
-              start: "top 70%",
-              end: "bottom 20%",
-              scrub: 1
+              start: "top 80%",
+              end: "bottom center",
+              scrub: 1.5
             }
           }
         );
 
         // Content Reveal
         gsap.fromTo(content,
-          { x: isLeft ? 100 : -100, opacity: 0 },
+          { x: isLeft ? 60 : -60, opacity: 0 },
           {
             x: 0,
             opacity: 1,
-            duration: 1.5,
-            ease: "power3.out",
+            duration: 1.8,
+            ease: "power4.out",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 65%",
+              toggleActions: "play none none reverse"
+            }
+          }
+        );
+
+
+
+        // Background Number Parallax
+        if (bgNum) {
+          gsap.to(bgNum, {
+            y: -150,
+            scrollTrigger: {
+              trigger: el,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1
+            }
+          });
+        }
+
+        // Looping Float Animation for Image
+        gsap.to(img, {
+          y: "-=15",
+          duration: 4,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1
+        });
+
+        // Typewriter Reveal for Paragraph
+        const words = el.querySelectorAll('.typewriter-word');
+        gsap.fromTo(words, 
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: 0.01,
+            stagger: 0.03,
+            ease: "none",
             scrollTrigger: {
               trigger: el,
               start: "top 60%",
@@ -98,19 +170,6 @@ const SignatureDishes = () => {
             }
           }
         );
-
-        // Background Text Parallax
-        if (bgText) {
-          gsap.to(bgText, {
-            y: -200,
-            scrollTrigger: {
-              trigger: el,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: true
-            }
-          });
-        }
       });
     }, containerRef);
 
@@ -118,71 +177,99 @@ const SignatureDishes = () => {
   }, []);
 
   return (
-    <section id="signature-dishes" ref={containerRef} className="relative w-full bg-black py-40 overflow-hidden">
+    <section id="signature-dishes" ref={containerRef} className="relative w-full bg-black py-40 overflow-hidden select-none">
       
       {/* Background NYC / Ambient Elements */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-         <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gold-900/20 rounded-full blur-[180px]" />
-         <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-neutral-900/40 rounded-full blur-[180px]" />
+      <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+         <div className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-gold-900/10 rounded-full blur-[200px]" />
+         <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-neutral-900/30 rounded-full blur-[200px]" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div ref={sectionTitleRef} className="text-center mb-40">
-          <p className="text-gold-500 font-light tracking-[0.5em] uppercase text-xs mb-6">
-            The Culinary Masterpieces
+        <div ref={sectionTitleRef} className="text-center mb-56">
+          <p className="text-gold-500/60 font-serif text-sm italic tracking-[0.2em] mb-4">
+            Curated Artisanal Cuisine
           </p>
-          <h2 className="text-6xl md:text-9xl font-serif text-white uppercase leading-none">
-            Signature <span className="italic font-light text-white/40">Selection</span>
+          <h2 ref={headingRef} className="text-5xl md:text-[7rem] font-serif uppercase leading-[0.9] tracking-tight">
+            <span className="inline-block whitespace-nowrap">
+               {chefChars.map((char, idx) => (
+                 <span 
+                   key={idx}
+                   className={`inline-block transition-colors duration-500 ease-out ${
+                     idx < activeCharIndex ? 'text-gold-500' : 'text-white/30'
+                   }`}
+                 >
+                    {char}
+                 </span>
+               ))}
+            </span> 
+            <span className="italic font-light text-white ml-4">
+               Signatures
+            </span>
           </h2>
         </div>
 
-        <div className="flex flex-col gap-40 md:gap-72">
+        <div className="flex flex-col gap-64 md:gap-96">
           {dishes.map((dish, i) => (
             <div 
               key={dish.id} 
               ref={el => dishRefs.current[i] = el}
-              className={`relative flex flex-col md:flex-row items-center gap-12 md:gap-24 ${dish.align === 'right' ? 'md:flex-row-reverse' : ''}`}
+              className={`relative flex flex-col md:flex-row items-center gap-16 md:gap-32 ${dish.align === 'right' ? 'md:flex-row-reverse' : ''}`}
             >
-              {/* Giant Background Text */}
-              <div className={`absolute top-1/2 -translate-y-1/2 ${dish.align === 'left' ? 'right-0' : 'left-0'} pointer-events-none z-0 opacity-[0.03] overflow-hidden hidden lg:block`}>
-                 <h3 className="bg-text text-[25vw] font-serif font-bold uppercase whitespace-nowrap leading-none tracking-tighter">
-                    {dish.name.split(' ')[0]}
-                 </h3>
+              {/* Elegant Luxury Numbering */}
+              <div className={`bg-number absolute top-[-10%] ${dish.align === 'left' ? 'left-[-5%]' : 'right-[-5%]'} pointer-events-none z-0 opacity-[0.07]`}>
+                 <span className="text-[25vw] md:text-[20vw] font-serif font-extralight text-white leading-none">
+                    0{i + 1}
+                 </span>
               </div>
 
-              {/* Image Side */}
+              {/* Image Side - Cinematic Framing */}
               <div className="relative w-full md:w-1/2 z-10">
                 <div className="relative aspect-square max-w-xl mx-auto flex items-center justify-center">
-                  {/* Glowing Aura */}
-                  <div className="absolute inset-0 bg-gold-500/5 blur-[100px] rounded-full" />
+                  {/* Luxury Glow */}
+                  <div className="absolute inset-0 bg-gold-400/5 blur-[160px] rounded-full scale-125" />
                   
-                  <img 
-                    src={dish.img} 
-                    alt={dish.name}
-                    className="dish-img w-full h-full object-contain filter drop-shadow-[0_35px_35px_rgba(0,0,0,0.8)] z-10"
-                  />
+                  <div className="relative w-full h-full p-8">
+                      <img 
+                        src={dish.img} 
+                        alt={dish.name}
+                        className="dish-img w-full h-full object-contain filter drop-shadow-[0_40px_60px_rgba(0,0,0,0.95)] z-10"
+                      />
+                  </div>
                   
-                  {/* Decorative Circle */}
-                  <div className="absolute inset-0 border border-gold-500/10 rounded-full scale-110 pointer-events-none" />
+                  {/* Decorative Elements */}
+                  <div className="absolute inset-0 border border-gold-500/5 rounded-full scale-110 pointer-events-none" />
                 </div>
               </div>
 
-              {/* Text Side */}
+              {/* Text Side - Tailored Typography */}
               <div className="dish-content w-full md:w-1/3 z-10 text-center md:text-left">
-                <p className="text-gold-500 font-serif text-2xl italic mb-4">{dish.price}</p>
-                <h4 className="text-4xl md:text-6xl font-serif text-white mb-8 border-l-2 border-gold-500 pl-6 ml-[-2px]">
+                <div className="inline-flex items-center gap-4 mb-8">
+                   <div className="h-px w-8 bg-gold-500/40" />
+                   <p className="text-gold-500 font-serif text-2xl italic tracking-wide">{dish.price}</p>
+                </div>
+                
+                <h4 className="text-4xl md:text-7xl font-serif text-white mb-10 tracking-tight leading-[1] font-medium">
                   {dish.name}
                 </h4>
-                <p className="text-gray-400 font-light text-lg leading-relaxed mb-10 max-w-md mx-auto md:mx-0">
-                  {dish.desc}
+                
+                <p className="text-white font-light text-lg md:text-xl leading-relaxed mb-12 max-w-sm mx-auto md:mx-0 font-sans tracking-wide">
+                   {dish.desc.split(" ").map((word, idx) => (
+                      <span key={idx} className="typewriter-word inline-block mr-[0.25em]">{word}</span>
+                   ))}
                 </p>
                 
-                <button 
+                <motion.button 
                    onClick={(e) => e.preventDefault()}
-                   className="px-10 py-4 border border-gold-500/30 text-gold-500 uppercase tracking-widest text-[11px] hover:bg-gold-500 hover:text-black transition-all duration-500 group"
+                   whileHover={{ scale: 1.04 }}
+                   whileTap={{ scale: 0.96 }}
+                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                   className="group relative px-14 py-4.5 bg-transparent border border-white/20 text-white uppercase tracking-[0.4em] text-[9px] transition-all duration-700 font-light overflow-hidden hover:border-gold-500/50"
                 >
-                   Discover Flavors
-                </button>
+                   <span className="relative z-10 group-hover:text-white transition-colors duration-500">Discover Dish</span>
+                   <div className="absolute inset-0 bg-gold-950/80 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700 ease-out" />
+                   <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gold-500/30" />
+                </motion.button>
               </div>
             </div>
           ))}

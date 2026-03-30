@@ -1,85 +1,124 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useLayoutEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Reviews = () => {
+  const containerRef = useRef(null);
+  const titleRef = useRef(null);
+
   const reviews = [
     {
        id: 1,
        author: "The New York Times",
        text: "A masterclass in culinary theater. Obsidian redefines what it means to dine in the dark, revealing flavors you never knew existed.",
-       stars: 5
     },
     {
        id: 2,
        author: "Michelin Guide",
-       text: "Impeccable execution meets daring innovation. Alexander Pierce has created a temple of gastronomy that demands your absolute attention.",
-       stars: 5
+       text: "Impeccable execution meets daring innovation. Alexander Pierce has created a temple of gastronomy that demands absolute attention.",
     },
     {
        id: 3,
        author: "Vogue",
-       text: "The sexiest dining room in Manhattan right now. The ambiance is as intoxicating as their signature Old Fashioned.",
-       stars: 5
+       text: "The sexiest dining room in Manhattan. The ambiance is as intoxicating as their signature Old Fashioned.",
     }
   ];
 
-  const [current, setCurrent] = useState(0);
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      // Title Entrance
+      gsap.from(titleRef.current, {
+        scrollTrigger: {
+          trigger: titleRef.current,
+          start: "top 85%",
+          toggleActions: "play none none reverse"
+        },
+        y: 40,
+        opacity: 0,
+        duration: 1.5,
+        ease: "power3.out"
+      });
 
-  const next = () => setCurrent(curr => (curr === reviews.length - 1 ? 0 : curr + 1));
-  const prev = () => setCurrent(curr => (curr === 0 ? reviews.length - 1 : curr - 1));
+      // Individual Review Entrance
+      const reviewElements = gsap.utils.toArray('.review-item');
+      reviewElements.forEach((el, i) => {
+        gsap.from(el, {
+          scrollTrigger: {
+            trigger: el,
+            start: "top 80%",
+            toggleActions: "play none none reverse"
+          },
+          y: 80,
+          opacity: 0,
+          duration: 2,
+          delay: i * 0.1,
+          ease: "expo.out"
+        });
+      });
+
+    }, containerRef);
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section id="reviews" className="relative w-full py-32 bg-black overflow-hidden border-t border-white/5">
-      <div className="container mx-auto px-6 max-w-4xl text-center">
-         
-         <div className="mb-12 flex justify-center gap-2">
-            {[...Array(5)].map((_, i) => (
-               <motion.span 
-                  key={i} 
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="text-gold-500 text-2xl shadow-gold-glow"
-               >
-                  ★
-               </motion.span>
+    <section id="reviews" ref={containerRef} className="relative w-full py-48 bg-black overflow-hidden select-none border-t border-white/5">
+      
+      {/* Background Graphic Element */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] opacity-[0.03] pointer-events-none">
+          <svg viewBox="0 0 100 100" className="w-full h-full fill-white">
+             <path d="M50 0 L100 50 L50 100 L0 50 Z" />
+          </svg>
+      </div>
+
+      <div className="container mx-auto px-6 max-w-7xl relative z-10">
+         <div ref={titleRef} className="text-center mb-40">
+            <p className="text-gold-500 font-serif text-sm italic tracking-[0.4em] mb-4">Critical Acclaim</p>
+            <h2 className="text-5xl md:text-8xl font-serif text-white uppercase italic leading-[0.9] tracking-tighter">
+               Press & <span className="font-light not-italic text-white ml-2">Appreciation</span>
+            </h2>
+         </div>
+
+         <div className="flex flex-col gap-32">
+            {reviews.map((review, i) => (
+              <div 
+                key={review.id} 
+                className={`review-item relative flex flex-col md:flex-row items-center gap-16 md:gap-32 ${i % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}
+              >
+                 {/* Massive Background Quote */}
+                 <div className="absolute top-0 opacity-[0.03] text-[20rem] md:text-[30rem] font-serif select-none pointer-events-none text-white leading-none">
+                    “
+                 </div>
+
+                 {/* Content Frame */}
+                 <div className="relative z-10 w-full md:w-3/4 flex flex-col items-center text-center px-6">
+                    <div className="flex justify-center gap-2 mb-10">
+                       {[...Array(5)].map((_, j) => (
+                          <div key={j} className="w-1.5 h-1.5 rounded-full bg-gold-500 opacity-60" />
+                       ))}
+                    </div>
+
+                    <p className="text-3xl md:text-6xl text-white font-serif italic mb-12 leading-tight tracking-tight">
+                       {review.text}
+                    </p>
+
+                    <div className="flex flex-col items-center gap-4">
+                       <div className="w-16 h-[1px] bg-gold-500/40" />
+                       <span className="text-gold-500 uppercase tracking-[0.5em] text-xs font-medium">
+                          {review.author}
+                       </span>
+                    </div>
+                 </div>
+
+                 {/* Decorative Image Frame (Minimal) */}
+                 <div className="hidden lg:block w-1/4 h-80 relative rounded-sm overflow-hidden border border-white/5 opacity-40">
+                    <img src={`/images/image${i+1}.png`} alt="" className="w-full h-full object-cover grayscale brightness-50" />
+                    <div className="absolute inset-0 bg-gold-950/20 mix-blend-color" />
+                 </div>
+              </div>
             ))}
          </div>
-
-         <div className="relative min-h-[200px]">
-            <AnimatePresence mode="wait">
-               <motion.div
-                 key={current}
-                 initial={{ opacity: 0, y: 20 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 exit={{ opacity: 0, y: -20 }}
-                 transition={{ duration: 0.5 }}
-                 className="absolute inset-0 flex flex-col items-center justify-center"
-               >
-                  <p className="text-2xl md:text-4xl text-white font-serif italic mb-8 leading-snug">
-                     "{reviews[current].text}"
-                  </p>
-                  <span className="text-gold-500 uppercase tracking-widest text-sm font-medium">
-                     — {reviews[current].author}
-                  </span>
-               </motion.div>
-            </AnimatePresence>
-         </div>
-
-         <div className="flex justify-center gap-8 mt-16">
-            <button onClick={prev} className="text-gray-500 hover:text-white transition-colors">
-               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 19l-7-7 7-7" /></svg>
-            </button>
-            <div className="flex gap-2 items-center">
-               {reviews.map((_, i) => (
-                  <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${i === current ? 'bg-gold-500' : 'bg-gray-700'}`} />
-               ))}
-            </div>
-            <button onClick={next} className="text-gray-500 hover:text-white transition-colors">
-               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5l7 7-7 7" /></svg>
-            </button>
-         </div>
-
       </div>
     </section>
   );
