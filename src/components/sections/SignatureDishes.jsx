@@ -11,7 +11,7 @@ const dishes = [
     name: "Truffle Caviar Pasta",
     desc: "Handmade linguine, aged parmesan, fresh black truffle shavings and premium sturgeon caviar.",
     price: "$85",
-    img: "https://res.cloudinary.com/dicb5gkab/image/upload/v1774725786/ChatGPT_Image_Mar_29_2026_12_49_56_AM_pt5mpd.png",
+    img: "https://res.cloudinary.com/dicb5gkab/image/upload/v1778055106/ChatGPT_Image_May_5_2026_09_50_18_PM-Photoroom_og2hx2.png",
     align: "left"
   },
   {
@@ -19,7 +19,7 @@ const dishes = [
     name: "Wagyu Tomahawk",
     desc: "A5 Grade Wagyu, smoked sea salt, rosemary infusion, and 24k gold leaf finishing.",
     price: "$210",
-    img: "https://res.cloudinary.com/dicb5gkab/image/upload/v1774725717/ChatGPT_Image_Mar_29_2026_12_50_00_AM_askqkw.png",
+    img: "https://res.cloudinary.com/dicb5gkab/image/upload/v1778055101/ChatGPT_Image_May_6_2026_01_25_36_PM_1_-Photoroom_cfnjii.png",
     align: "right"
   },
   {
@@ -27,7 +27,7 @@ const dishes = [
     name: "Gold Leaf Lobster",
     desc: "Butter-poached lobster tail wrapped in 24k edible gold with micro-greens and saffron emulsion.",
     price: "$150",
-    img: "https://res.cloudinary.com/dicb5gkab/image/upload/v1774727854/ChatGPT_Image_Mar_29_2026_01_26_18_AM-Photoroom_xox4wr.png",
+    img: "https://res.cloudinary.com/dicb5gkab/image/upload/v1778055101/ChatGPT_Image_May_6_2026_01_25_36_PM_4_-Photoroom_wy0w0p.png",
     align: "left"
   }
 ];
@@ -66,6 +66,10 @@ const SignatureDishes = ({ isEntered }) => {
   }, [isEntered]);
 
   useLayoutEffect(() => {
+    // Track all infinite loops so we can kill them if needed
+    const spinLoops = [];
+    const floatLoops = [];
+
     let ctx = gsap.context(() => {
       // Title Block Entrance Animation
       gsap.from(sectionTitleRef.current, {
@@ -80,43 +84,75 @@ const SignatureDishes = ({ isEntered }) => {
         ease: "power4.out"
       });
 
-      // (Chef's text reveal is handled by scroll listener + CSS transitions, not GSAP)
-
       // Dishes Animation
       dishRefs.current.forEach((el, index) => {
+        if (!el) return;
         const isLeft = dishes[index].align === 'left';
-        
+
         const img = el.querySelector('.dish-img');
         const content = el.querySelector('.dish-content');
         const bgNum = el.querySelector('.bg-number');
 
-        // Image Parallax & Reveal
-        gsap.fromTo(img, 
-          { 
-            y: 120, 
-            opacity: 0,
-            scale: 0.9,
-            rotate: isLeft ? -3 : 3
-          },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            rotate: 0,
-            duration: 2.5,
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 80%",
-              end: "bottom center",
-              scrub: 1.5
-            }
-          }
-        );
+        if (!img) return;
 
-        // Content Reveal
+        // ─── Step 1: Entry sweep (left → centre, -45° → 0°) ───────────────
+        // The image enters with a sweeping rotation from the left side,
+        // settles to upright, then hands off to the slow presentation spin.
+        const entryTl = gsap.timeline({
+          paused: true,
+          onComplete: () => {
+            // ─── Step 2: Slow "turntable" presentation spin ──────────────
+            // After entry, rotate gently & continuously — very slow, like
+            // a luxury product on a revolving display stand.
+            const spin = gsap.to(img, {
+              rotation: "+=360",
+              duration: 80,          // one full revolution in 80 s — very slow
+              ease: "none",
+              repeat: -1,
+              transformOrigin: "50% 50%"
+            });
+            spinLoops.push(spin);
+
+            // ─── Step 3: Subtle floating up/down ────────────────────────
+            const fl = gsap.to(img, {
+              y: "-=12",
+              duration: 3.5,
+              ease: "sine.inOut",
+              yoyo: true,
+              repeat: -1
+            });
+            floatLoops.push(fl);
+          }
+        });
+
+        entryTl
+          .fromTo(img,
+            {
+              y: 120,
+              opacity: 0,
+              scale: 0.75,
+              rotation: -45          // start tilted left
+            },
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              rotation: 0,           // sweeps right to upright
+              duration: 2.4,
+              ease: "expo.out"
+            }
+          );
+
+        ScrollTrigger.create({
+          trigger: el,
+          start: "top 82%",
+          toggleActions: "play none none none",  // fire once — let loops run
+          onEnter: () => entryTl.play()
+        });
+
+        // ─── Content Reveal ────────────────────────────────────────────────
         gsap.fromTo(content,
-          { x: isLeft ? 60 : -60, opacity: 0 },
+          { x: isLeft ? 70 : -70, opacity: 0 },
           {
             x: 0,
             opacity: 1,
@@ -130,9 +166,7 @@ const SignatureDishes = ({ isEntered }) => {
           }
         );
 
-
-
-        // Background Number Parallax
+        // ─── Background Number Parallax ───────────────────────────────────
         if (bgNum) {
           gsap.to(bgNum, {
             y: -150,
@@ -145,18 +179,9 @@ const SignatureDishes = ({ isEntered }) => {
           });
         }
 
-        // Looping Float Animation for Image
-        gsap.to(img, {
-          y: "-=15",
-          duration: 4,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1
-        });
-
-        // Typewriter Reveal for Paragraph
+        // ─── Typewriter Reveal ────────────────────────────────────────────
         const words = el.querySelectorAll('.typewriter-word');
-        gsap.fromTo(words, 
+        gsap.fromTo(words,
           { opacity: 0 },
           {
             opacity: 1,
@@ -173,7 +198,11 @@ const SignatureDishes = ({ isEntered }) => {
       });
     }, containerRef);
 
-    return () => ctx.revert();
+    return () => {
+      spinLoops.forEach(t => t.kill());
+      floatLoops.forEach(t => t.kill());
+      ctx.revert();
+    };
   }, []);
 
   return (
