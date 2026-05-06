@@ -20,15 +20,7 @@ const Layout = ({ children }) => {
           {children}
         </main>
 
-        <div className={`transition-opacity duration-1000 ${isFrameVisible ? 'opacity-100' : 'opacity-0'}`}>
-            <footer className="p-10 text-center text-xs text-gray-600 border-t border-white/5 bg-black">
-              <div className="mb-4">
-                <h2 className="text-xl font-serif text-white mb-2">OBSIDIAN</h2>
-                <p className="font-cursive text-2xl text-gold-500">Experience the Extraordinary</p>
-              </div>
-              &copy; {new Date().getFullYear()} OBSIDIAN. All rights reserved.
-            </footer>
-        </div>
+        {/* Global Footer removed to allow pages to render their own custom footers (e.g. Footer.jsx) */}
       </div>
     </LayoutContext.Provider>
   );

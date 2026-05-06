@@ -26,10 +26,15 @@ const Navbar = () => {
         </Link>
         
         <ul className="hidden md:flex gap-8 items-center cursor-pointer">
-          {['Home', 'Menu', 'Story', 'Reservations'].map((item) => (
-            <li key={item} className="relative group">
-              <Link to="/" className="text-[10px] uppercase tracking-[0.2em] text-white/60 group-hover:text-gold-400 transition-colors duration-300">
-                {item}
+          {[
+            { label: 'Home',         to: '/'            },
+            { label: 'Menu',         to: '/menu'        },
+            { label: 'Story',        to: '/'            },
+            { label: 'Reservations', to: '/'            },
+          ].map(({ label, to }) => (
+            <li key={label} className="relative group">
+              <Link to={to} className="text-[10px] uppercase tracking-[0.2em] text-white/60 group-hover:text-gold-400 transition-colors duration-300">
+                {label}
               </Link>
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold-400 transition-all duration-300 group-hover:w-full"></span>
             </li>
