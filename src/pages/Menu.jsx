@@ -134,6 +134,7 @@ const SignatureCard = ({ item, index }) => {
     const el = cardRef.current;
     const img = imgRef.current;
     if (!el || !img) return;
+    const baseTilt = isReversed ? 4 : -4;
 
     // Card Container Animation
     gsap.fromTo(el,
@@ -144,47 +145,38 @@ const SignatureCard = ({ item, index }) => {
       }
     );
 
-    // Image Entrance + Float & Spin Animation
-    let localSpin, localFloat;
+    // Image entrance, landing into a gentle plated angle
     const entryTl = gsap.timeline({
       paused: true,
-      onComplete: () => {
-        localSpin = gsap.fromTo(img, 
-          { rotation: -15 },
-          {
-            rotation: 15,
-            duration: 20,
-            ease: "sine.inOut",
-            yoyo: true,
-            repeat: -1,
-            transformOrigin: "50% 50%"
-          }
-        );
-        localFloat = gsap.to(img, {
-          y: "-=12",
-          duration: 3.5,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1
-        });
-      }
     });
 
     entryTl.fromTo(img,
-      { y: -80, opacity: 0, scale: 0.85, rotation: -25 },
-      { y: 0, opacity: 1, scale: 1, rotation: 0, duration: 2.4, ease: "power3.out" }
+      { y: -80, opacity: 0, scale: 0.85, rotation: baseTilt - 8 },
+      { y: 0, opacity: 1, scale: 1, rotation: baseTilt, duration: 2.4, ease: "power3.out" }
     );
 
     ScrollTrigger.create({
       trigger: el,
       start: "top 82%",
       onEnter: () => entryTl.play(),
-      onLeaveBack: () => {
-        if (localSpin) localSpin.kill();
-        if (localFloat) localFloat.kill();
-        entryTl.reverse();
-      }
+      onLeaveBack: () => entryTl.reverse()
     });
+
+    gsap.fromTo(
+      img,
+      { rotation: baseTilt - 3, y: 8 },
+      {
+        rotation: baseTilt + 3,
+        y: -8,
+        ease: "none",
+        scrollTrigger: {
+          trigger: el,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+        },
+      }
+    );
   }, []);
 
   return (
@@ -199,10 +191,7 @@ const SignatureCard = ({ item, index }) => {
       </span>
 
       {/* Image side */}
-      <div className="relative w-full md:w-1/2 flex items-center justify-center">
-        {/* Gold glow */}
-        <div className="absolute inset-0 rounded-full blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-          style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 70%)' }} />
+      <div className="relative w-full md:w-1/2 flex items-center justify-center py-6 md:py-8">
         <img
           ref={imgRef}
           src={item.img}
@@ -214,8 +203,8 @@ const SignatureCard = ({ item, index }) => {
       </div>
 
       {/* Content side */}
-      <div className={`w-full md:w-1/2 ${isReversed ? 'md:text-right' : ''}`}>
-        <div className={`flex items-center gap-4 mb-6 ${isReversed ? 'md:flex-row-reverse' : ''}`}>
+      <div className="w-full md:w-1/2">
+        <div className="flex items-center gap-4 mb-6">
           <div className="h-px w-8 bg-gold-500/50" />
           <span className="text-gold-500/70 font-serif italic text-xs tracking-[0.35em] uppercase">
             {String(index + 1).padStart(2, '0')} / Signature
@@ -228,7 +217,7 @@ const SignatureCard = ({ item, index }) => {
         <p className="text-white/40 font-sans text-sm md:text-base leading-relaxed mb-8 max-w-sm tracking-wide">
           {item.desc}
         </p>
-        <div className={`flex items-center gap-6 ${isReversed ? 'md:flex-row-reverse md:justify-start' : ''}`}>
+        <div className="flex items-center gap-6">
           <span className="font-serif text-gold-400 text-2xl tracking-wide">{item.price}</span>
           <button className="group/btn relative px-8 py-3 border border-white/15 text-white text-[9px]
                              uppercase tracking-[0.4em] overflow-hidden transition-all duration-500
@@ -278,7 +267,11 @@ const MenuRow = ({ item, index, total }) => {
       {/* Image Thumbnail */}
       {item.img && (
         <div className="hidden md:flex w-24 h-24 items-center justify-center flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity duration-300">
-           <img src={item.img} alt={item.name} className="max-w-full max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-500" />
+           <img
+             src={item.img}
+             alt={item.name}
+             className="max-w-full max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform duration-500"
+           />
         </div>
       )}
 

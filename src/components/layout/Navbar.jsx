@@ -29,7 +29,7 @@ const Navbar = () => {
           {[
             { label: 'Home',         to: '/'            },
             { label: 'Menu',         to: '/menu'        },
-            { label: 'Story',        to: '/'            },
+            { label: 'Story',        to: '/story'       },
             { label: 'Reservations', to: '/reservations'},
           ].map(({ label, to }) => (
             <li key={label} className="relative group">

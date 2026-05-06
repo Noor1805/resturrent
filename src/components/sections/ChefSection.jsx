@@ -142,7 +142,7 @@ const ChefSection = ({ isEntered }) => {
             
             <div className="chef-reveal mt-16 flex justify-center lg:justify-start">
               <img 
-                src="/images/signature.png" 
+                src="/images/signature.svg" 
                 alt="Alexander Pierce Signature" 
                 className="h-12 md:h-16 opacity-30 filter invert mix-blend-screen" 
                 onError={(e) => e.target.style.display = 'none'} 

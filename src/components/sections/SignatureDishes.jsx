@@ -16,10 +16,10 @@ const dishes = [
   },
   {
     id: 2,
-    name: "Wagyu Tomahawk",
-    desc: "A5 Grade Wagyu, smoked sea salt, rosemary infusion, and 24k gold leaf finishing.",
-    price: "$210",
-    img: "https://res.cloudinary.com/dicb5gkab/image/upload/v1778055101/ChatGPT_Image_May_6_2026_01_25_36_PM_1_-Photoroom_cfnjii.png",
+    name: "Chocolate Gold Lava Cake",
+    desc: "Molten Valrhona chocolate cake with vanilla bean gelato, forest berries, and 24k gold leaf.",
+    price: "$65",
+    img: "/asset/our story/ChatGPT Image May 6, 2026, 05_35_50 PM-Photoroom.png",
     align: "right"
   },
   {
@@ -61,7 +61,7 @@ const SignatureDishes = ({ isEntered }) => {
     if (isEntered) {
       setTimeout(() => {
         ScrollTrigger.refresh();
-      }, 100); 
+      }, 100);
     }
   }, [isEntered]);
 
@@ -102,7 +102,7 @@ const SignatureDishes = ({ isEntered }) => {
           paused: true,
           onComplete: () => {
             // ─── Step 2: Slow pendulum spin (left to right) ───
-            localSpin = gsap.fromTo(img, 
+            localSpin = gsap.fromTo(img,
               { rotation: -15 },
               {
                 rotation: 15,
@@ -213,11 +213,11 @@ const SignatureDishes = ({ isEntered }) => {
 
   return (
     <section id="signature-dishes" ref={containerRef} className="relative w-full bg-black py-40 overflow-hidden select-none">
-      
+
       {/* Background NYC / Ambient Elements */}
       <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
-         <div className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-gold-900/10 rounded-full blur-[200px]" />
-         <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-neutral-900/30 rounded-full blur-[200px]" />
+        <div className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-gold-900/10 rounded-full blur-[200px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-neutral-900/30 rounded-full blur-[200px]" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -227,83 +227,79 @@ const SignatureDishes = ({ isEntered }) => {
           </p>
           <h2 ref={headingRef} className="text-5xl md:text-[7rem] font-serif uppercase leading-[0.9] tracking-tight">
             <span className="inline-block whitespace-nowrap">
-               {chefChars.map((char, idx) => (
-                 <span 
-                   key={idx}
-                   className={`inline-block transition-colors duration-500 ease-out ${
-                     idx < activeCharIndex ? 'text-gold-500' : 'text-white/30'
-                   }`}
-                 >
-                    {char}
-                 </span>
-               ))}
-            </span> 
+              {chefChars.map((char, idx) => (
+                <span
+                  key={idx}
+                  className={`inline-block transition-colors duration-500 ease-out ${idx < activeCharIndex ? 'text-gold-500' : 'text-white/30'
+                    }`}
+                >
+                  {char}
+                </span>
+              ))}
+            </span>
             <span className="italic font-light text-white ml-4">
-               Signatures
+              Signatures
             </span>
           </h2>
         </div>
 
         <div className="flex flex-col gap-64 md:gap-96">
           {dishes.map((dish, i) => (
-            <div 
-              key={dish.id} 
+            <div
+              key={dish.id}
               ref={el => dishRefs.current[i] = el}
               className={`relative flex flex-col md:flex-row items-center gap-16 md:gap-32 ${dish.align === 'right' ? 'md:flex-row-reverse' : ''}`}
             >
               {/* Elegant Luxury Numbering */}
               <div className={`bg-number absolute top-[-10%] ${dish.align === 'left' ? 'left-[-5%]' : 'right-[-5%]'} pointer-events-none z-0 opacity-[0.07]`}>
-                 <span className="text-[25vw] md:text-[20vw] font-serif font-extralight text-white leading-none">
-                    0{i + 1}
-                 </span>
+                <span className="text-[25vw] md:text-[20vw] font-serif font-extralight text-white leading-none">
+                  0{i + 1}
+                </span>
               </div>
 
               {/* Image Side - Cinematic Framing */}
               <div className="relative w-full md:w-1/2 z-10">
                 <div className="relative aspect-square max-w-xl mx-auto flex items-center justify-center">
                   {/* Luxury Glow */}
-                  <div className="absolute inset-0 bg-gold-400/5 blur-[160px] rounded-full scale-125" />
-                  
+                  <div className="absolute left-1/2 top-1/2 h-[12rem] w-[12rem] md:h-[15rem] md:w-[15rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-400/6 blur-[90px]" />
+
                   <div className="relative w-full h-full p-8">
-                      <img 
-                        src={dish.img} 
-                        alt={dish.name}
-                        className="dish-img w-full h-full object-contain filter drop-shadow-[0_40px_60px_rgba(0,0,0,0.95)] z-10"
-                      />
+                    <img
+                      src={dish.img}
+                      alt={dish.name}
+                      className="dish-img w-full h-full object-contain filter drop-shadow-[0_40px_60px_rgba(0,0,0,0.95)] z-10"
+                    />
                   </div>
-                  
-                  {/* Decorative Elements */}
-                  <div className="absolute inset-0 border border-gold-500/5 rounded-full scale-110 pointer-events-none" />
                 </div>
               </div>
 
               {/* Text Side - Tailored Typography */}
               <div className="dish-content w-full md:w-1/3 z-10 text-center md:text-left">
                 <div className="inline-flex items-center gap-4 mb-8">
-                   <div className="h-px w-8 bg-gold-500/40" />
-                   <p className="text-gold-500 font-serif text-2xl italic tracking-wide">{dish.price}</p>
+                  <div className="h-px w-8 bg-gold-500/40" />
+                  <p className="text-gold-500 font-serif text-2xl italic tracking-wide">{dish.price}</p>
                 </div>
-                
+
                 <h4 className="text-4xl md:text-7xl font-serif text-white mb-10 tracking-tight leading-[1] font-medium">
                   {dish.name}
                 </h4>
-                
+
                 <p className="text-white font-light text-lg md:text-xl leading-relaxed mb-12 max-w-sm mx-auto md:mx-0 font-sans tracking-wide">
-                   {dish.desc.split(" ").map((word, idx) => (
-                      <span key={idx} className="typewriter-word inline-block mr-[0.25em]">{word}</span>
-                   ))}
+                  {dish.desc.split(" ").map((word, idx) => (
+                    <span key={idx} className="typewriter-word inline-block mr-[0.25em]">{word}</span>
+                  ))}
                 </p>
-                
-                <motion.button 
-                   onClick={(e) => e.preventDefault()}
-                   whileHover={{ scale: 1.04 }}
-                   whileTap={{ scale: 0.96 }}
-                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                   className="group relative px-14 py-4.5 bg-transparent border border-white/20 text-white uppercase tracking-[0.4em] text-[9px] transition-all duration-700 font-light overflow-hidden hover:border-gold-500/50"
+
+                <motion.button
+                  onClick={(e) => e.preventDefault()}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  className="group relative px-14 py-4.5 bg-transparent border border-white/20 text-white uppercase tracking-[0.4em] text-[9px] transition-all duration-700 font-light overflow-hidden hover:border-gold-500/50"
                 >
-                   <span className="relative z-10 group-hover:text-white transition-colors duration-500">Discover Dish</span>
-                   <div className="absolute inset-0 bg-gold-950/80 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700 ease-out" />
-                   <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gold-500/30" />
+                  <span className="relative z-10 group-hover:text-white transition-colors duration-500">Discover Dish</span>
+                  <div className="absolute inset-0 bg-gold-950/80 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700 ease-out" />
+                  <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gold-500/30" />
                 </motion.button>
               </div>
             </div>

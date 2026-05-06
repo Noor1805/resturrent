@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import gsap from 'gsap';
 import { useLenis } from '../common/SmoothScroll';
-import restaurantBg from '../../assets/Images/restaurant-bg.jpg';
 
 const IntroOverlay = ({ onEnter }) => {
   const [entered, setEntered] = useState(false);
