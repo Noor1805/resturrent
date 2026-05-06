@@ -4,6 +4,35 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const SOCIAL_ICONS = [
+  {
+    name: 'Instagram',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+      </svg>
+    )
+  },
+  {
+    name: 'Facebook',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+      </svg>
+    )
+  },
+  {
+    name: 'X',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-[16px] h-[16px]">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+    )
+  }
+];
+
 const Footer = () => {
   const footerRef = useRef(null);
 
@@ -40,10 +69,10 @@ const Footer = () => {
         clipPath: 'inset(0% 0 0 0)',
         ease: 'none',
         scrollTrigger: {
-          trigger: '.footer-logo-container',
-          start: 'top 90%',
-          end: 'bottom 80%',
-          scrub: true,
+          trigger: footerRef.current,
+          start: 'top 80%',
+          end: 'bottom bottom',
+          scrub: 1.5,
         }
       });
 
@@ -81,10 +110,16 @@ const Footer = () => {
             <p className="text-white/40 text-sm font-sans tracking-wide leading-relaxed mb-8 max-w-sm">
               Where shadow meets flavor. Redefining the boundaries of fine dining in the heart of New York City.
             </p>
-            <div className="flex gap-6">
-              {['Ig', 'Fb', 'X'].map((social, i) => (
-                <button key={i} className="group relative w-10 h-10 rounded-full border border-white/10 flex items-center justify-center overflow-hidden transition-all duration-500 hover:border-gold-500/50">
-                  <span className="relative z-10 text-xs font-sans tracking-wider text-white/50 group-hover:text-gold-400 transition-colors duration-500">{social}</span>
+            <div className="flex gap-6 mt-2">
+              {SOCIAL_ICONS.map((social, i) => (
+                <button 
+                  key={i} 
+                  aria-label={social.name}
+                  className="group relative w-12 h-12 rounded-full border border-white/10 flex items-center justify-center overflow-hidden transition-all duration-500 hover:border-gold-500/50"
+                >
+                  <span className="relative z-10 text-white/50 group-hover:text-gold-400 transition-colors duration-500">
+                    {social.icon}
+                  </span>
                   <div className="absolute inset-0 bg-gold-950/40 scale-0 group-hover:scale-100 rounded-full transition-transform duration-500 ease-out" />
                 </button>
               ))}
@@ -141,12 +176,12 @@ const Footer = () => {
         {/* Big Logo Text */}
         <div className="footer-logo-container relative w-full flex justify-center items-center py-10 border-t border-white/5 overflow-hidden">
            {/* Background text (Gray/Dim) */}
-           <h1 className="font-serif text-[15vw] leading-none tracking-tighter text-white/[0.05] select-none pointer-events-none">
+           <h1 className="font-serif text-[14vw] sm:text-[12vw] lg:text-[10.5vw] leading-none tracking-tighter text-white/[0.05] select-none pointer-events-none">
              OBSIDIAN
            </h1>
            {/* Foreground text (Gold Fill) */}
            <h1 
-             className="footer-logo-fill absolute inset-0 flex justify-center items-center font-serif text-[15vw] leading-none tracking-tighter text-gold-500 select-none pointer-events-none"
+             className="footer-logo-fill absolute inset-0 flex justify-center items-center font-serif text-[14vw] sm:text-[12vw] lg:text-[10.5vw] leading-none tracking-tighter text-gold-500 select-none pointer-events-none"
              style={{ clipPath: 'inset(100% 0 0 0)' }}
            >
              OBSIDIAN

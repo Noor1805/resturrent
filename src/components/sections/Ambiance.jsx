@@ -72,12 +72,14 @@ const ImageCard = React.forwardRef(({ src, label, tag, gridArea }, ref) => (
   >
     {/* ── image ── */}
     <div className="absolute inset-0 overflow-hidden">
-      <img
-        src={src}
-        alt={label}
-        className="gallery-img w-full h-full object-cover scale-[1.07]
-                   transition-transform duration-[1100ms] ease-out group-hover:scale-[1.14]"
-      />
+      <div className="gallery-parallax-wrapper w-full h-full">
+        <img
+          src={src}
+          alt={label}
+          className="w-full h-full object-cover scale-[1.15]
+                     transition-transform duration-[1100ms] ease-out group-hover:scale-100"
+        />
+      </div>
     </div>
 
     {/* ── gradient ── */}
@@ -318,7 +320,7 @@ const Ambiance = () => {
       });
 
       // parallax
-      gsap.utils.toArray('.gallery-img').forEach((img) => {
+      gsap.utils.toArray('.gallery-parallax-wrapper').forEach((img) => {
         gsap.to(img, {
           y: '-7%',
           ease: 'none',

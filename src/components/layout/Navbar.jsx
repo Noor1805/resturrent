@@ -17,11 +17,11 @@ const Navbar = () => {
 
   return (
     <nav className={clsx(
-      "fixed top-0 left-0 w-full z-50 transition-all duration-500 px-6 py-4 border-b border-transparent",
-      isScrolled ? "bg-black/80 backdrop-blur-md border-white/10 py-3" : "bg-transparent"
+      "fixed top-0 left-0 w-full z-50 transition-all duration-500 px-6 md:px-12 border-b border-transparent",
+      isScrolled ? "bg-black/80 backdrop-blur-xl border-white/10 py-4 md:py-5" : "bg-transparent py-6 md:py-8"
     )}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link to="/" className="text-2xl font-serif text-white tracking-widest uppercase hover:text-gold-500 transition-colors duration-300">
+        <Link to="/" className="text-2xl md:text-3xl font-serif text-white tracking-widest uppercase hover:text-gold-500 transition-colors duration-300">
           OBSIDIAN
         </Link>
         
@@ -30,20 +30,20 @@ const Navbar = () => {
             { label: 'Home',         to: '/'            },
             { label: 'Menu',         to: '/menu'        },
             { label: 'Story',        to: '/'            },
-            { label: 'Reservations', to: '/'            },
+            { label: 'Reservations', to: '/reservations'},
           ].map(({ label, to }) => (
             <li key={label} className="relative group">
-              <Link to={to} className="text-[10px] uppercase tracking-[0.2em] text-white/60 group-hover:text-gold-400 transition-colors duration-300">
+              <Link to={to} className="text-[11px] md:text-xs uppercase tracking-[0.25em] text-white/70 group-hover:text-gold-400 transition-colors duration-300">
                 {label}
               </Link>
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold-400 transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute -bottom-1.5 left-0 w-0 h-[1px] bg-gold-400 transition-all duration-300 group-hover:w-full"></span>
             </li>
           ))}
         </ul>
 
-        <button className="hidden md:block px-6 py-2 border border-white/20 text-[10px] uppercase tracking-widest text-white hover:bg-gold-500 hover:border-gold-500 hover:text-black transition-all duration-400">
+        <Link to="/reservations" className="hidden md:block px-8 py-3 border border-white/20 text-xs uppercase tracking-[0.2em] text-white hover:bg-gold-500 hover:border-gold-500 hover:text-black transition-all duration-400">
           Book Now
-        </button>
+        </Link>
 
         {/* Mobile Menu Button Placeholder */}
         <div className="md:hidden text-white cursor-pointer">

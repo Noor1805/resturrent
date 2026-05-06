@@ -95,59 +95,65 @@ const SignatureDishes = ({ isEntered }) => {
 
         if (!img) return;
 
-        // ─── Step 1: Entry sweep (left → centre, -45° → 0°) ───────────────
-        // The image enters with a sweeping rotation from the left side,
-        // settles to upright, then hands off to the slow presentation spin.
+        let localSpin, localFloat;
+
+        // ─── Step 1: Entry from top, landing upright (0°) ───────────────
         const entryTl = gsap.timeline({
           paused: true,
           onComplete: () => {
-            // ─── Step 2: Slow "turntable" presentation spin ──────────────
-            // After entry, rotate gently & continuously — very slow, like
-            // a luxury product on a revolving display stand.
-            const spin = gsap.to(img, {
-              rotation: "+=360",
-              duration: 80,          // one full revolution in 80 s — very slow
-              ease: "none",
-              repeat: -1,
-              transformOrigin: "50% 50%"
-            });
-            spinLoops.push(spin);
+            // ─── Step 2: Slow pendulum spin (left to right) ───
+            localSpin = gsap.fromTo(img, 
+              { rotation: -15 },
+              {
+                rotation: 15,
+                duration: 20,          // very slow, elegant sweep
+                ease: "sine.inOut",
+                yoyo: true,
+                repeat: -1,
+                transformOrigin: "50% 50%"
+              }
+            );
+            spinLoops.push(localSpin);
 
             // ─── Step 3: Subtle floating up/down ────────────────────────
-            const fl = gsap.to(img, {
+            localFloat = gsap.to(img, {
               y: "-=12",
               duration: 3.5,
               ease: "sine.inOut",
               yoyo: true,
               repeat: -1
             });
-            floatLoops.push(fl);
+            floatLoops.push(localFloat);
           }
         });
 
         entryTl
           .fromTo(img,
             {
-              y: 120,
+              y: -80,                // comes from top
               opacity: 0,
-              scale: 0.75,
-              rotation: -45          // start tilted left
+              scale: 0.85,
+              rotation: -25          // start slightly tilted left
             },
             {
               y: 0,
               opacity: 1,
               scale: 1,
-              rotation: 0,           // sweeps right to upright
+              rotation: 0,           // smoothly lands perfectly upright (0 degrees)
               duration: 2.4,
-              ease: "expo.out"
+              ease: "power3.out"
             }
           );
 
         ScrollTrigger.create({
           trigger: el,
           start: "top 82%",
-          toggleActions: "play none none none",  // fire once — let loops run
-          onEnter: () => entryTl.play()
+          onEnter: () => entryTl.play(),
+          onLeaveBack: () => {
+            if (localSpin) localSpin.kill();
+            if (localFloat) localFloat.kill();
+            entryTl.reverse();
+          }
         });
 
         // ─── Content Reveal ────────────────────────────────────────────────

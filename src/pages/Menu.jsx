@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Footer from '../components/sections/Footer';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -127,18 +128,63 @@ const MENU = {
 const SignatureCard = ({ item, index }) => {
   const isReversed = index % 2 !== 0;
   const cardRef = useRef(null);
+  const imgRef = useRef(null);
 
   useLayoutEffect(() => {
     const el = cardRef.current;
-    if (!el) return;
+    const img = imgRef.current;
+    if (!el || !img) return;
+
+    // Card Container Animation
     gsap.fromTo(el,
       { y: 70, opacity: 0 },
       {
         y: 0, opacity: 1, duration: 1.4, ease: 'expo.out',
-        delay: index * 0.15,
-        scrollTrigger: { trigger: el, start: 'top 82%', toggleActions: 'play none none reverse' },
-      },
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' },
+      }
     );
+
+    // Image Entrance + Float & Spin Animation
+    let localSpin, localFloat;
+    const entryTl = gsap.timeline({
+      paused: true,
+      onComplete: () => {
+        localSpin = gsap.fromTo(img, 
+          { rotation: -15 },
+          {
+            rotation: 15,
+            duration: 20,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+            transformOrigin: "50% 50%"
+          }
+        );
+        localFloat = gsap.to(img, {
+          y: "-=12",
+          duration: 3.5,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1
+        });
+      }
+    });
+
+    entryTl.fromTo(img,
+      { y: -80, opacity: 0, scale: 0.85, rotation: -25 },
+      { y: 0, opacity: 1, scale: 1, rotation: 0, duration: 2.4, ease: "power3.out" }
+    );
+
+    ScrollTrigger.create({
+      trigger: el,
+      start: "top 82%",
+      onEnter: () => entryTl.play(),
+      onLeaveBack: () => {
+        if (localSpin) localSpin.kill();
+        if (localFloat) localFloat.kill();
+        entryTl.reverse();
+      }
+    });
   }, []);
 
   return (
@@ -157,13 +203,13 @@ const SignatureCard = ({ item, index }) => {
         {/* Gold glow */}
         <div className="absolute inset-0 rounded-full blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"
           style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 70%)' }} />
-        <motion.img
+        <img
+          ref={imgRef}
           src={item.img}
           alt={item.name}
           className="relative z-10 w-64 md:w-80 xl:w-96 h-auto object-contain
                      drop-shadow-[0_40px_80px_rgba(0,0,0,0.9)]
                      transition-transform duration-700 group-hover:scale-105"
-          whileHover={{ rotate: [-1, 1, -1, 0], transition: { duration: 0.5 } }}
         />
       </div>
 
@@ -369,13 +415,22 @@ const Menu = () => {
         ease: 'expo.out',
         delay: 0.9,
       });
-      gsap.from('.hero-img', {
-        scale: 0.85,
-        opacity: 0,
-        duration: 1.8,
-        ease: 'expo.out',
-        delay: 0.5,
-      });
+
+      // Hero Image Entrance + Float + Spin
+      const heroImg = document.querySelector('.hero-img');
+      if (heroImg) {
+         gsap.fromTo(heroImg, 
+            { y: -80, opacity: 0, scale: 0.85, rotation: -25 },
+            { 
+              y: 0, opacity: 1, scale: 1, rotation: 0, 
+              duration: 2.4, ease: 'power3.out', delay: 0.5,
+              onComplete: () => {
+                gsap.fromTo(heroImg, { rotation: -15 }, { rotation: 15, duration: 20, ease: 'sine.inOut', yoyo: true, repeat: -1, transformOrigin: '50% 50%' });
+                gsap.to(heroImg, { y: "-=12", duration: 3.5, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+              }
+            }
+         );
+      }
     }, heroRef);
     return () => ctx.revert();
   }, []);
@@ -515,78 +570,58 @@ const Menu = () => {
         ))}
       </div>
 
-      {/* ── RESERVATION CTA ──────────────────────────────────────────────── */}
-      <section className="relative py-40 overflow-hidden">
-        {/* BG glow */}
+      {/* ── HIGH-END RESERVATION CTA ───────────────────────────────────────── */}
+      <section className="relative py-40 md:py-56 overflow-hidden bg-[#030303] border-t border-white/5">
+        
+        {/* Layered Gradient Overlays & Ambient Gold Glow */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0"
-            style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(212,175,55,0.06) 0%, transparent 70%)' }} />
+           <div className="absolute inset-0 bg-gradient-to-b from-[#030303] via-black/50 to-[#030303]" />
+           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gold-500/5 blur-[180px] rounded-full" />
         </div>
 
-        {/* Ghost text */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-          <span className="font-serif text-[20vw] text-white/[0.018] uppercase tracking-wider leading-none">
-            Reserve
-          </span>
-        </div>
-
-        <div className="container mx-auto px-6 lg:px-16 relative z-10 text-center">
-          <p className="text-gold-500/60 font-serif italic text-xs tracking-[0.5em] uppercase mb-8">
-            Obsidian • New York
-          </p>
-          <h2 className="font-serif text-white uppercase text-4xl md:text-7xl xl:text-8xl
-                         tracking-tight leading-none mb-6">
-            Reserve Your{' '}
-            <em className="not-italic font-extralight" style={{ color: 'rgba(212,175,55,0.85)' }}>
-              Table
-            </em>
-          </h2>
-          <p className="text-white/30 font-sans text-base md:text-lg leading-relaxed mb-14 max-w-md mx-auto tracking-wide">
-            An unforgettable evening at Obsidian awaits.
-          </p>
-
-          {/* Divider */}
-          <div className="flex items-center gap-6 mb-14 max-w-xs mx-auto">
-            <div className="h-px flex-1 bg-white/10" />
-            <div className="w-1 h-1 rounded-full bg-gold-500/50" />
-            <div className="h-px flex-1 bg-white/10" />
+        <div className="container mx-auto px-6 lg:px-16 relative z-10 flex flex-col items-center justify-center text-center">
+          
+          {/* Subtle Label */}
+          <div className="flex items-center gap-6 mb-10">
+            <div className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent to-gold-500/50" />
+            <p className="text-gold-500/80 tracking-[0.4em] text-[10px] md:text-xs uppercase font-sans">
+              The Next Step
+            </p>
+            <div className="h-px w-12 md:w-20 bg-gradient-to-l from-transparent to-gold-500/50" />
           </div>
 
-          <motion.button
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            className="group relative inline-flex items-center gap-6 px-16 py-5
-                       border border-gold-500/40 text-white text-[10px] uppercase tracking-[0.5em]
-                       font-sans overflow-hidden hover:border-gold-500"
+          {/* Premium Headline */}
+          <h2 className="font-serif text-white uppercase text-5xl md:text-[6rem] lg:text-[8rem]
+                         tracking-tighter leading-[0.9] mb-8 drop-shadow-2xl">
+            Secure Your <br />
+            <em className="italic text-gold-500 font-light pr-2">Table</em>
+          </h2>
+
+          <p className="text-white/40 font-sans text-sm md:text-base leading-relaxed mb-20 max-w-lg mx-auto tracking-[0.1em] font-light">
+            Indulge in a curated journey of flavor, ambiance, and extraordinary service. 
+            Reservations are limited and highly sought after.
+          </p>
+
+          {/* Luxury Circular Button */}
+          <button 
+            onClick={(e) => e.preventDefault()}
+            className="group relative flex items-center justify-center w-48 h-48 md:w-56 md:h-56 rounded-full border border-white/10 bg-black/40 backdrop-blur-md text-white uppercase tracking-[0.3em] text-[10px] md:text-xs transition-all duration-700 overflow-hidden hover:border-gold-500/60 shadow-[0_0_60px_rgba(212,175,55,0.03)] hover:shadow-[0_0_80px_rgba(212,175,55,0.1)] hover:scale-[1.03] active:scale-[0.97]"
           >
-            <span className="relative z-10 transition-colors duration-500">Book Experience</span>
-            <div className="absolute inset-0 bg-gold-500/10 scale-x-0 group-hover:scale-x-100
-                            origin-left transition-transform duration-700 ease-out" />
-            <div className="absolute bottom-0 left-0 right-0 h-px bg-gold-500/40" />
-          </motion.button>
+            <span className="relative z-10 transition-colors duration-500 group-hover:text-white">Book Now</span>
+            
+            {/* Hover Sweep */}
+            <div className="absolute inset-0 bg-gold-500/10 scale-0 group-hover:scale-150 rounded-full origin-center transition-transform duration-[800ms] ease-out" />
+            
+            {/* Spinning Golden Trace Line */}
+            <svg className="absolute inset-0 w-full h-full text-gold-500 -rotate-90 pointer-events-none" viewBox="0 0 100 100">
+               <circle cx="50" cy="50" r="49" fill="transparent" strokeWidth="0.5" stroke="currentColor" strokeDasharray="308" strokeDashoffset="308" className="transition-all duration-[1500ms] ease-out group-hover:[stroke-dashoffset:0] opacity-0 group-hover:opacity-100" />
+            </svg>
+          </button>
         </div>
       </section>
 
-      {/* ── MINI FOOTER ──────────────────────────────────────────────────── */}
-      <footer className="border-t border-white/5 py-16">
-        <div className="container mx-auto px-6 lg:px-16 text-center">
-          <h3 className="font-serif text-white text-2xl md:text-3xl tracking-widest uppercase mb-3">
-            OBSIDIAN
-          </h3>
-          <p className="text-white/30 font-sans text-xs tracking-[0.4em] uppercase mb-2">
-            Fine Dining • Cocktails • Private Events
-          </p>
-          <p className="text-white/20 font-serif italic text-sm">New York City</p>
-          <div className="mt-10 flex items-center gap-6 max-w-xs mx-auto">
-            <div className="h-px flex-1 bg-white/5" />
-            <span className="text-white/10 text-[10px] tracking-widest uppercase font-sans">
-              © {new Date().getFullYear()}
-            </span>
-            <div className="h-px flex-1 bg-white/5" />
-          </div>
-        </div>
-      </footer>
+      {/* ── GLOBAL LUXURY FOOTER ─────────────────────────────────────────── */}
+      <Footer />
 
     </div>
   );

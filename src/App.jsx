@@ -4,6 +4,7 @@ import SmoothScroll from './components/common/SmoothScroll';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
+import Reservation from './pages/Reservation';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/menu" element={<Menu />} />
+            <Route path="/reservations" element={<Reservation />} />
           </Routes>
         </Layout>
       </Router>
