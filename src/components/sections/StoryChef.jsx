@@ -30,7 +30,7 @@ const StoryChef = () => {
       </div>
 
       {/* Right Side Content */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-12 lg:p-20 bg-black z-10 border-l border-[#d4af37]/30">
+      <div className="w-full md:w-1/2 flex items-center justify-center px-5 py-10 sm:px-6 md:p-12 lg:p-20 bg-black z-10 border-t border-[#d4af37]/30 md:border-t-0 md:border-l">
         <div className="max-w-md flex flex-col items-start w-full">
           
           <motion.h3 
@@ -38,7 +38,7 @@ const StoryChef = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, margin: "-50px" }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="text-[#e6d5b8] font-serif text-xl md:text-2xl lg:text-[28px] uppercase tracking-widest leading-snug mb-5"
+            className="text-[#e6d5b8] font-serif text-[1.7rem] md:text-2xl lg:text-[28px] uppercase tracking-[0.14em] leading-snug mb-5"
           >
             Crafted Without Compromise
           </motion.h3>
@@ -57,7 +57,7 @@ const StoryChef = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: false, margin: "-50px" }}
-            className="text-white font-sans text-[14px] md:text-[15px] leading-loose tracking-wide mb-10 pr-4"
+            className="text-white font-sans text-[14px] md:text-[15px] leading-8 md:leading-loose tracking-wide mb-10 pr-0 md:pr-4"
           >
             {words.map((word, index) => (
               <motion.span variants={child} key={index} className="inline-block mr-[0.25em]">

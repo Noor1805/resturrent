@@ -14,7 +14,7 @@ import Footer from '../components/sections/Footer';
 
 const Story = () => {
   return (
-    <div className="bg-black min-h-screen">
+    <div className="bg-black min-h-screen overflow-x-hidden pb-[calc(7.5rem+env(safe-area-inset-bottom))] md:pb-0">
       <StoryHero />
       <StoryAbout />
       <StoryPhilosophy />

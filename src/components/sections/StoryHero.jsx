@@ -1,56 +1,48 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const StoryHero = () => {
-  const paragraphText = "Obsidian is a tribute to contrast—where elemental fire meets precious gold, and silence elevates every detail. In the heart of New York, we craft unforgettable experiences for those who seek the exceptional.";
-  
-  // Split paragraph into characters for typewriter effect
-  const characters = paragraphText.split("");
+  const paragraphText =
+    'Obsidian is a tribute to contrast where elemental fire meets precious gold, and silence elevates every detail. In the heart of New York, we craft unforgettable experiences for those who seek the exceptional.';
+
+  const characters = paragraphText.split('');
 
   return (
-    <section className="relative w-full h-screen bg-black overflow-hidden flex items-center">
-      {/* Background Image */}
-      <div className="absolute inset-0 w-full h-full">
-        {/* You mentioned "image to move PSD" converted to PNG. Using image.png from our story folder */}
-        <img 
-            src="/asset/our story/image.png" 
-            alt="Obsidian Dining Room" 
-            className="w-full h-full object-cover opacity-50 scale-105" 
+    <section className="relative flex min-h-[100svh] w-full items-center overflow-hidden bg-black">
+      <div className="absolute inset-0 h-full w-full">
+        <img src="/asset/our story/image.png" alt="Obsidian Dining Room" className="h-full w-full object-cover opacity-50 scale-105" />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.88) 100%)' }}
         />
-        {/* Gradient overlay to make text readable (symmetrical for centered layout) */}
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%)' }}></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90" />
       </div>
 
-      {/* Content Container */}
-      <div className="relative z-10 container mx-auto px-6 md:px-16 pt-24">
-        <div className="max-w-5xl flex flex-col items-center text-center mx-auto">
-          
-          {/* Eyebrow / Top Title */}
-          <div className="overflow-hidden mb-2">
-            <motion.h3 
-              initial={{ opacity: 0, y: 30, filter: "blur(5px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      <div className="container relative z-10 mx-auto px-5 pt-24 sm:px-6 md:px-16">
+        <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
+          <div className="mb-2 overflow-hidden">
+            <motion.h3
+              initial={{ opacity: 0, y: 30, filter: 'blur(5px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               transition={{ duration: 1.2, delay: 0.2, ease: [0.2, 0.65, 0.3, 0.9] }}
-              className="text-gold-500 font-serif text-lg md:text-2xl uppercase tracking-[0.2em]"
-              style={{ color: '#d4af37' }}
+              className="font-serif text-base uppercase tracking-[0.28em] text-[#d4af37] md:text-2xl"
             >
               The Story Of
             </motion.h3>
           </div>
 
-          {/* Main Title (Movie Text Reveal Effect) */}
-          <div className="mb-8 w-full flex justify-center">
-            <h1 className="text-7xl md:text-[8rem] lg:text-[11rem] xl:text-[12rem] font-serif font-light text-white tracking-widest leading-none flex items-center justify-center -ml-1">
-              {"OBSIDIAN".split("").map((char, index) => (
+          <div className="mb-7 flex w-full justify-center md:mb-8">
+            <h1 className="flex flex-wrap items-center justify-center font-serif text-[3.35rem] font-light leading-[0.88] tracking-[0.12em] text-white sm:text-[4.5rem] md:text-[8rem] lg:text-[11rem] xl:text-[12rem]">
+              {'OBSIDIAN'.split('').map((char, index) => (
                 <motion.span
                   key={index}
-                  initial={{ opacity: 0, y: 80, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  transition={{ 
-                    duration: 1.6, 
-                    delay: 0.4 + (index * 0.1), 
-                    ease: [0.16, 1, 0.3, 1] 
+                  initial={{ opacity: 0, y: 80, filter: 'blur(10px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{
+                    duration: 1.6,
+                    delay: 0.4 + index * 0.1,
+                    ease: [0.16, 1, 0.3, 1],
                   }}
                   className="inline-block"
                 >
@@ -60,42 +52,35 @@ const StoryHero = () => {
             </h1>
           </div>
 
-          {/* Separator Line */}
-          <motion.div 
+          <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ duration: 1.5, delay: 1.2, ease: "easeOut" }}
-            className="w-24 h-px bg-gold-500/60 mb-8 origin-center"
+            transition={{ duration: 1.5, delay: 1.2, ease: 'easeOut' }}
+            className="mb-7 h-px w-20 origin-center bg-gold-500/60 md:mb-8 md:w-24"
             style={{ backgroundColor: '#d4af37' }}
           />
 
-          {/* Subtitle */}
-          <div className="overflow-hidden mb-6">
-            <motion.h2 
+          <div className="mb-6 overflow-hidden">
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 1.4, ease: "easeOut" }}
-              className="text-xl md:text-3xl font-serif tracking-widest uppercase leading-snug"
-              style={{ color: '#d4af37' }}
+              transition={{ duration: 1.2, delay: 1.4, ease: 'easeOut' }}
+              className="font-serif text-lg uppercase leading-snug tracking-[0.22em] text-[#d4af37] md:text-3xl"
             >
-              A Legacy of Fire, Gold,<br />and Silence.
+              A Legacy of Fire, Gold,
+              <br />
+              and Silence.
             </motion.h2>
           </div>
 
-          {/* Paragraph with Typewriter effect */}
-          <div className="mb-12 max-w-2xl min-h-[80px]">
-            <motion.p 
-              className="text-white/60 font-sans text-sm md:text-base leading-loose tracking-wide"
-            >
+          <div className="mb-10 min-h-[96px] max-w-2xl md:mb-12">
+            <motion.p className="text-sm leading-7 tracking-wide text-white/60 md:text-base md:leading-loose">
               {characters.map((char, index) => (
                 <motion.span
                   key={index}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ 
-                    duration: 0.1, 
-                    delay: 2.0 + (index * 0.015) 
-                  }}
+                  transition={{ duration: 0.1, delay: 2 + index * 0.015 }}
                 >
                   {char}
                 </motion.span>
@@ -103,40 +88,33 @@ const StoryHero = () => {
             </motion.p>
           </div>
 
-          {/* Buttons */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 4.5, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row justify-center gap-6 pointer-events-auto"
+            transition={{ duration: 1, delay: 4.5, ease: 'easeOut' }}
+            className="flex w-full max-w-md flex-col justify-center gap-4 sm:max-w-none sm:flex-row sm:gap-6"
           >
-            {/* Filled Gold Button */}
-            <a 
-              href="/reservations" 
-              className="group relative px-8 py-4 flex items-center justify-center overflow-hidden transition-all duration-500 hover:scale-[1.02] active:scale-[0.98]"
+            <Link
+              to="/reservations"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'auto' })}
+              className="group relative flex items-center justify-center overflow-hidden px-8 py-4 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98]"
               style={{ backgroundColor: '#c69c3a' }}
             >
-              <div className="absolute inset-0 bg-white/20 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-500 ease-out" />
-              <span className="relative z-10 text-black font-semibold uppercase tracking-[0.2em] text-xs">
-                Reserve A Table
-              </span>
-            </a>
-            
-            {/* Outlined Button */}
-            <a 
-              href="/menu" 
-              className="group relative px-8 py-4 flex items-center justify-center border border-white/30 transition-all duration-500 overflow-hidden hover:border-white/60 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <div className="absolute inset-0 bg-white/5 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-500 ease-out" />
-              <span className="relative z-10 text-white uppercase tracking-[0.2em] text-xs transition-colors duration-500">
-                Explore Menu
-              </span>
-            </a>
-          </motion.div>
+              <div className="absolute inset-0 origin-center scale-x-0 bg-white/20 transition-transform duration-500 ease-out group-hover:scale-x-100" />
+              <span className="relative z-10 text-xs font-semibold uppercase tracking-[0.2em] text-black">Reserve A Table</span>
+            </Link>
 
+            <Link
+              to="/menu"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'auto' })}
+              className="group relative flex items-center justify-center overflow-hidden border border-white/30 px-8 py-4 transition-all duration-500 hover:scale-[1.02] hover:border-white/60 active:scale-[0.98]"
+            >
+              <div className="absolute inset-0 origin-center scale-x-0 bg-white/5 transition-transform duration-500 ease-out group-hover:scale-x-100" />
+              <span className="relative z-10 text-xs uppercase tracking-[0.2em] text-white transition-colors duration-500">Explore Menu</span>
+            </Link>
+          </motion.div>
         </div>
       </div>
-
     </section>
   );
 };
