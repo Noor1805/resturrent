@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -35,6 +35,32 @@ const SOCIAL_ICONS = [
 
 const Footer = () => {
   const footerRef = useRef(null);
+  const [typedText, setTypedText] = useState('');
+  const fullText = "Developed by Devacia Agency";
+
+  useEffect(() => {
+    let index = 0;
+    let isDeleting = false;
+    let timeoutId;
+    
+    const type = () => {
+      if (!isDeleting && index <= fullText.length) {
+        setTypedText(fullText.substring(0, index));
+        index++;
+        timeoutId = setTimeout(type, 100);
+      } else if (isDeleting && index >= 0) {
+        setTypedText(fullText.substring(0, index));
+        index--;
+        timeoutId = setTimeout(type, 50);
+      } else {
+        isDeleting = !isDeleting;
+        timeoutId = setTimeout(type, isDeleting ? 3000 : 500); // Wait longer when fully typed
+      }
+    };
+    
+    timeoutId = setTimeout(type, 500);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   useLayoutEffect(() => {
     let ctx = gsap.context(() => {
@@ -189,9 +215,16 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10 text-[10px] uppercase tracking-[0.3em] text-white/30 font-sans footer-anim">
-           <p>&copy; {new Date().getFullYear()} Obsidian Restaurant.</p>
-           <div className="flex gap-8 mt-4 md:mt-0">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center pt-8 border-t border-white/10 text-[10px] uppercase tracking-[0.3em] text-white/30 font-sans footer-anim text-center md:text-left">
+           <p className="md:col-span-1">&copy; {new Date().getFullYear()} Obsidian Restaurant.</p>
+           
+           <div className="md:col-span-1 flex justify-center items-center text-gold-400 font-semibold min-h-[16px]">
+              <a href="https://devacia.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
+                 {typedText}<span className="animate-pulse">|</span>
+              </a>
+           </div>
+
+           <div className="md:col-span-1 flex justify-center md:justify-end gap-8">
               <a href="#" className="hover:text-gold-400 transition-colors duration-300">Privacy Policy</a>
               <a href="#" className="hover:text-gold-400 transition-colors duration-300">Terms of Service</a>
            </div>
