@@ -134,49 +134,66 @@ const SignatureCard = ({ item, index }) => {
     const el = cardRef.current;
     const img = imgRef.current;
     if (!el || !img) return;
-    const baseTilt = isReversed ? 4 : -4;
 
-    // Card Container Animation
-    gsap.fromTo(el,
-      { y: 70, opacity: 0 },
-      {
-        y: 0, opacity: 1, duration: 1.4, ease: 'expo.out',
-        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' },
-      }
-    );
+    let localSpin, localFloat;
 
-    // Image entrance, landing into a gentle plated angle
-    const entryTl = gsap.timeline({
-      paused: true,
-    });
+    let ctx = gsap.context(() => {
+      // Card Container Animation
+      gsap.fromTo(el,
+        { y: 70, opacity: 0 },
+        {
+          y: 0, opacity: 1, duration: 1.4, ease: 'expo.out',
+          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' },
+        }
+      );
 
-    entryTl.fromTo(img,
-      { y: -80, opacity: 0, scale: 0.85, rotation: baseTilt - 8 },
-      { y: 0, opacity: 1, scale: 1, rotation: baseTilt, duration: 2.4, ease: "power3.out" }
-    );
+      // Image entrance, landing upright (0°)
+      const entryTl = gsap.timeline({
+        paused: true,
+        onComplete: () => {
+          localSpin = gsap.fromTo(img,
+            { rotation: -15 },
+            {
+              rotation: 15,
+              duration: 20,
+              ease: "sine.inOut",
+              yoyo: true,
+              repeat: -1,
+              transformOrigin: "50% 50%"
+            }
+          );
+          localFloat = gsap.to(img, {
+            y: "-=12",
+            duration: 3.5,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1
+          });
+        }
+      });
 
-    ScrollTrigger.create({
-      trigger: el,
-      start: "top 82%",
-      onEnter: () => entryTl.play(),
-      onLeaveBack: () => entryTl.reverse()
-    });
+      entryTl.fromTo(img,
+        { y: -80, opacity: 0, scale: 0.85, rotation: -25 },
+        { y: 0, opacity: 1, scale: 1, rotation: 0, duration: 2.4, ease: "power3.out" }
+      );
 
-    gsap.fromTo(
-      img,
-      { rotation: baseTilt - 3, y: 8 },
-      {
-        rotation: baseTilt + 3,
-        y: -8,
-        ease: "none",
-        scrollTrigger: {
-          trigger: el,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.2,
-        },
-      }
-    );
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top 82%",
+        onEnter: () => entryTl.play(),
+        onLeaveBack: () => {
+          if (localSpin) localSpin.kill();
+          if (localFloat) localFloat.kill();
+          entryTl.reverse();
+        }
+      });
+    }, el);
+
+    return () => {
+      if (localSpin) localSpin.kill();
+      if (localFloat) localFloat.kill();
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -260,7 +277,8 @@ const MenuRow = ({ item, index, total }) => {
                   ${hovered ? 'border-gold-500/20' : 'border-white/5'}`}
     >
       {/* Index */}
-      <span className="text-white/15 font-serif italic text-xs tracking-[0.3em] flex-shrink-0 w-8">
+      <span className={`font-serif italic text-xs tracking-[0.3em] flex-shrink-0 w-8 transition-colors duration-400
+                        ${hovered ? 'text-white' : 'text-white/15'}`}>
         {String(index + 1).padStart(2, '0')}
       </span>
 
@@ -382,12 +400,22 @@ const Menu = () => {
   const titleRef = useRef(null);
 
   useEffect(() => {
-    // Scroll to section on tab click
-    const el = document.getElementById(`menu-${activeTab}`);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (window.location.hash) {
+      const hash = window.location.hash.substring(1); // e.g. menu-signatures
+      const el = document.getElementById(hash);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (hash.startsWith('menu-')) {
+            setActiveTab(hash.replace('menu-', ''));
+          }
+        }, 300); // Slight delay to ensure DOM is ready
+      }
+    } else {
+      // Guarantee that if there is no hash, the user lands at the very top (Hero section)
+      window.scrollTo({ top: 0, behavior: 'instant' });
     }
-  }, [activeTab]);
+  }, []);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -563,53 +591,56 @@ const Menu = () => {
         ))}
       </div>
 
-      {/* ── HIGH-END RESERVATION CTA ───────────────────────────────────────── */}
-      <section className="relative py-40 md:py-56 overflow-hidden bg-[#030303] border-t border-white/5">
+      {/* ── HIGH-END RESERVATION CTA (REDESIGNED IMMERSIVE) ───────────────── */}
+      <section className="relative w-full py-40 md:py-60 flex items-center justify-center overflow-hidden border-t border-white/5">
         
-        {/* Layered Gradient Overlays & Ambient Gold Glow */}
-        <div className="absolute inset-0 pointer-events-none">
-           <div className="absolute inset-0 bg-gradient-to-b from-[#030303] via-black/50 to-[#030303]" />
-           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gold-500/5 blur-[180px] rounded-full" />
+        {/* Full-bleed Background Image */}
+        <div className="absolute inset-0 w-full h-full z-0">
+          <img 
+            src="/asset/our story/image 1.png" 
+            alt="Obsidian Atmosphere" 
+            className="w-full h-[120%] -top-[10%] relative object-cover filter brightness-[0.35] contrast-[1.2]"
+            onError={(e) => { e.target.src = '/asset/restaurant-bg.jpg' }}
+          />
+          {/* Gradients for smooth blending into the page */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/80" />
         </div>
 
-        <div className="container mx-auto px-6 lg:px-16 relative z-10 flex flex-col items-center justify-center text-center">
+        {/* Content */}
+        <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
           
-          {/* Subtle Label */}
-          <div className="flex items-center gap-6 mb-10">
-            <div className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent to-gold-500/50" />
-            <p className="text-gold-500/80 tracking-[0.4em] text-[10px] md:text-xs uppercase font-sans">
-              The Next Step
-            </p>
-            <div className="h-px w-12 md:w-20 bg-gradient-to-l from-transparent to-gold-500/50" />
+          <div className="flex items-center gap-6 mb-8">
+            <div className="h-px w-12 md:w-24 bg-gradient-to-r from-transparent to-[#d4af37]/60" />
+            <span className="text-[#d4af37] font-sans text-[10px] md:text-xs tracking-[0.5em] uppercase">
+              Join the Experience
+            </span>
+            <div className="h-px w-12 md:w-24 bg-gradient-to-l from-transparent to-[#d4af37]/60" />
           </div>
 
-          {/* Premium Headline */}
-          <h2 className="font-serif text-white uppercase text-5xl md:text-[6rem] lg:text-[8rem]
-                         tracking-tighter leading-[0.9] mb-8 drop-shadow-2xl">
-            Secure Your <br />
-            <em className="italic text-gold-500 font-light pr-2">Table</em>
+          <h2 className="font-serif text-white uppercase text-5xl md:text-7xl lg:text-[7rem] tracking-tight leading-[0.9] mb-6 drop-shadow-2xl">
+            Reserve <br />
+            <span className="italic text-[#d4af37] font-light lowercase text-6xl md:text-8xl lg:text-[8rem]">a table</span>
           </h2>
 
-          <p className="text-white/40 font-sans text-sm md:text-base leading-relaxed mb-20 max-w-lg mx-auto tracking-[0.1em] font-light">
-            Indulge in a curated journey of flavor, ambiance, and extraordinary service. 
-            Reservations are limited and highly sought after.
+          <p className="text-white/50 font-sans text-sm md:text-base leading-relaxed max-w-lg mx-auto tracking-widest uppercase font-light mb-14 drop-shadow-md">
+            Step out of the ordinary. Immerse yourself in culinary excellence.
           </p>
 
-          {/* Luxury Circular Button */}
           <button 
-            onClick={(e) => e.preventDefault()}
-            className="group relative flex items-center justify-center w-48 h-48 md:w-56 md:h-56 rounded-full border border-white/10 bg-black/40 backdrop-blur-md text-white uppercase tracking-[0.3em] text-[10px] md:text-xs transition-all duration-700 overflow-hidden hover:border-gold-500/60 shadow-[0_0_60px_rgba(212,175,55,0.03)] hover:shadow-[0_0_80px_rgba(212,175,55,0.1)] hover:scale-[1.03] active:scale-[0.97]"
+            onClick={(e) => {
+              e.preventDefault();
+              setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'instant' });
+                window.location.href = '/reservations';
+              }, 300);
+            }}
+            className="group relative px-14 py-5 border border-[#d4af37]/50 bg-black/30 backdrop-blur-md text-[#d4af37] uppercase tracking-[0.3em] text-[11px] md:text-xs font-bold overflow-hidden transition-all duration-700 hover:border-[#d4af37] active:scale-[0.95] hover:shadow-[0_0_40px_rgba(212,175,55,0.2)]"
           >
-            <span className="relative z-10 transition-colors duration-500 group-hover:text-white">Book Now</span>
-            
-            {/* Hover Sweep */}
-            <div className="absolute inset-0 bg-gold-500/10 scale-0 group-hover:scale-150 rounded-full origin-center transition-transform duration-[800ms] ease-out" />
-            
-            {/* Spinning Golden Trace Line */}
-            <svg className="absolute inset-0 w-full h-full text-gold-500 -rotate-90 pointer-events-none" viewBox="0 0 100 100">
-               <circle cx="50" cy="50" r="49" fill="transparent" strokeWidth="0.5" stroke="currentColor" strokeDasharray="308" strokeDashoffset="308" className="transition-all duration-[1500ms] ease-out group-hover:[stroke-dashoffset:0] opacity-0 group-hover:opacity-100" />
-            </svg>
+            <span className="relative z-10 transition-colors duration-500 group-hover:text-black">Book Your Evening</span>
+            <div className="absolute inset-0 bg-[#d4af37] scale-y-0 group-hover:scale-y-100 origin-bottom transition-transform duration-700 ease-out" />
           </button>
+
         </div>
       </section>
 

@@ -290,17 +290,17 @@ const SignatureDishes = ({ isEntered }) => {
                   ))}
                 </p>
 
-                <motion.button
-                  onClick={(e) => e.preventDefault()}
+                <motion.a
+                  href="/menu#menu-signatures"
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  className="group relative px-14 py-4.5 bg-transparent border border-white/20 text-white uppercase tracking-[0.4em] text-[9px] transition-all duration-700 font-light overflow-hidden hover:border-gold-500/50"
+                  className="inline-block text-center group relative px-14 py-4.5 bg-transparent border border-white/20 text-white uppercase tracking-[0.4em] text-[9px] transition-all duration-700 font-light overflow-hidden hover:border-gold-500/50"
                 >
                   <span className="relative z-10 group-hover:text-white transition-colors duration-500">Discover Dish</span>
                   <div className="absolute inset-0 bg-gold-950/80 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700 ease-out" />
                   <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gold-500/30" />
-                </motion.button>
+                </motion.a>
               </div>
             </div>
           ))}

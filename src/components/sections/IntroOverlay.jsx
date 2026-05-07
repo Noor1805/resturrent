@@ -92,7 +92,7 @@ const IntroOverlay = ({ onEnter }) => {
       >
         <div className="w-px h-12 bg-white/10" />
         <p className="font-sans text-[9px] uppercase tracking-[0.7em] text-white/30">
-          Est. 2018 · New York
+          Est. 1998 · New York
         </p>
         <h1 className="font-serif text-[clamp(3.5rem,10vw,8.5rem)] text-white leading-none tracking-tight uppercase">
           OBSIDIAN

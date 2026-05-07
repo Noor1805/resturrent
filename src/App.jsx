@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Menu from './pages/Menu';
 import Reservation from './pages/Reservation';
 import Story from './pages/Story';
+import Contact from './pages/Contact';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/menu" element={<Menu />} />
             <Route path="/reservations" element={<Reservation />} />
             <Route path="/story" element={<Story />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </Layout>
       </Router>

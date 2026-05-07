@@ -8,11 +8,10 @@ const ChefSection = ({ isEntered }) => {
   const containerRef = useRef(null);
   const imageRef = useRef(null);
   const textGroupRef = useRef(null);
-  const iconRef = useRef(null);
   const headingRef = useRef(null);
 
-  // Devacia-style scroll reveal for "Alexander"
-  const alexanderChars = "Alexander".split("");
+  // Restore the scroll reveal animation for the name
+  const nameChars = "Alexander Pierce".split("");
   const [activeCharIndex, setActiveCharIndex] = useState(-1);
 
   useEffect(() => {
@@ -22,66 +21,50 @@ const ChefSection = ({ isEntered }) => {
       const windowHeight = window.innerHeight;
       const scrollProgress = (windowHeight / 1.3 - top) / (height + windowHeight / 3);
       const clamped = Math.max(0, Math.min(1, scrollProgress));
-      setActiveCharIndex(Math.floor(clamped * alexanderChars.length));
+      setActiveCharIndex(Math.floor(clamped * nameChars.length));
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [alexanderChars.length]);
+  }, [nameChars.length]);
 
   useLayoutEffect(() => {
     let ctx = gsap.context(() => {
-
-      // Icon rotation parallax
+      // Seal rotates continuously on loop
       gsap.to(".rotating-seal-svg", {
         rotation: 360,
+        duration: 20,
         ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.5
-        }
-      });
-
-      // Image Floating Effect (Loop)
-      gsap.to(imageRef.current, {
-        y: "-=20",
-        duration: 3,
-        ease: "sine.inOut",
-        yoyo: true,
         repeat: -1
       });
 
-      // Text Entrance Reveal (Headers)
+      // Chef Image Zoom Reveal
+      gsap.fromTo(imageRef.current,
+        { scale: 1.15, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 75%",
+          }
+        }
+      );
+
+      // Text Entrance Reveal
       gsap.fromTo('.chef-reveal', 
-         { opacity: 0, y: 50 },
+         { opacity: 0, y: 30 },
          { 
             opacity: 1, 
             y: 0, 
-            duration: 1.5, 
-            stagger: 0.15,
+            duration: 1.2, 
+            stagger: 0.1,
             ease: "expo.out",
             scrollTrigger: {
-               trigger: textGroupRef.current,
+               trigger: containerRef.current,
                start: "top 75%",
-               toggleActions: "play none none reverse"
-            }
-         }
-      );
-
-      // Paragraph Typewriter Effect
-      gsap.fromTo('.typewriter-word',
-         { opacity: 0 },
-         {
-            opacity: 1,
-            duration: 0.01,
-            stagger: 0.04,
-            ease: "none",
-            scrollTrigger: {
-               trigger: textGroupRef.current,
-               start: "top 70%",
-               toggleActions: "play none none reverse"
             }
          }
       );
@@ -90,94 +73,107 @@ const ChefSection = ({ isEntered }) => {
     return () => ctx.revert();
   }, [isEntered]);
 
-  const p1 = "Forged in the demanding fires of Europe's most decorated three-star kitchens, Chef Pierce commands culinary architecture with unforgiving precision.".split(" ");
-  const p2 = "His philosophy strips away the superfluous. He isolates flavor at its absolute peak, utilizing ancient preservation techniques and avant-garde molecular precision to craft a narrative you can taste.".split(" ");
-
   return (
-    <section id="chef" ref={containerRef} className="relative w-full min-h-[900px] xl:h-[100vh] bg-black py-32 overflow-hidden flex items-center">
-      
-
-
-      <div className="container mx-auto px-6 h-full relative z-10 flex items-center">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24 w-full">
+    <section id="chef" ref={containerRef} className="relative w-full bg-black flex items-center justify-center pt-16 pb-0 overflow-hidden">
+      <div className="max-w-[1500px] w-full mx-auto px-6 md:px-12 relative z-10 flex items-center justify-center">
+        
+        <div className="flex flex-col lg:flex-row items-center justify-between w-full min-h-[550px] gap-12 lg:gap-8">
           
           {/* Left Text Content */}
-          <div ref={textGroupRef} className="flex-1 w-full lg:pr-12 text-center lg:text-left z-10">
-            <div className="chef-reveal flex items-center justify-center lg:justify-start gap-6 mb-10">
-               <div className="w-12 h-px bg-gold-500/50" />
-               <p className="text-gold-500 tracking-[0.4em] text-xs uppercase font-light">
-                 Meet The Maestro
+          <div ref={textGroupRef} className="w-full lg:w-[35%] flex flex-col justify-center items-center lg:items-start text-center lg:text-left z-20 pb-16 lg:pb-0">
+            <div className="chef-reveal flex items-center mb-4">
+               <p className="text-[#d4af37] tracking-[0.25em] text-[11px] md:text-[13px] uppercase font-bold">
+                 OUR CHEF
                </p>
             </div>
             
-            <h2 ref={headingRef} className="chef-reveal text-6xl md:text-7xl xl:text-[7.5rem] font-serif mb-8 leading-[0.85] tracking-tight text-white">
+            <h2 ref={headingRef} className="chef-reveal text-[46px] md:text-[54px] lg:text-[60px] font-serif mb-2 leading-[1] text-white">
               Chef <br />
-              <span className="ml-2 lg:ml-8 block whitespace-nowrap">
-                {alexanderChars.map((char, idx) => (
+              <span className="block whitespace-nowrap mt-1">
+                {nameChars.map((char, idx) => (
                   <span 
                     key={idx}
                     className={`inline-block transition-colors duration-500 ease-out ${
-                      idx < activeCharIndex ? 'text-gold-500' : 'text-white/30'
+                      idx < activeCharIndex ? 'text-[#d4af37]' : 'text-[#d4af37]/30'
                     }`}
                   >
-                     {char}
+                     {char === " " ? "\u00A0" : char}
                   </span>
                 ))}
               </span>
-              <span className="text-white ml-4 lg:ml-16 block">Pierce</span>
             </h2>
+            
+            <p className="chef-reveal text-[#d4af37] tracking-widest text-[11px] md:text-[13px] uppercase mb-6 font-medium">
+              Executive Chef & Founder
+            </p>
 
-            <div className="space-y-6 text-white font-light leading-relaxed max-w-xl mx-auto lg:mx-0 tracking-wide text-lg md:text-xl">
+            <div className="chef-reveal space-y-4 text-white/60 font-sans leading-[1.8] text-[14px] md:text-[15px] max-w-[380px]">
               <p>
-                {p1.map((word, i) => (
-                  <span key={i} className="typewriter-word inline-block mr-[0.25em]">{word}</span>
-                ))}
-              </p>
-              <p>
-                {p2.map((word, i) => (
-                  <span key={i} className="typewriter-word inline-block mr-[0.25em]">{word}</span>
-                ))}
+                With a career shaped by the world's finest kitchens, Chef Pierce creates with purpose, seasonality, and an uncompromising commitment to excellence.
               </p>
             </div>
             
-            <div className="chef-reveal mt-16 flex justify-center lg:justify-start">
-              <img 
-                src="/images/signature.svg" 
-                alt="Alexander Pierce Signature" 
-                className="h-12 md:h-16 opacity-30 filter invert mix-blend-screen" 
-                onError={(e) => e.target.style.display = 'none'} 
+            {/* White Signature Mask - Left */}
+            <div className="chef-reveal mt-8 drop-shadow-[0_10px_15px_rgba(255,255,255,0.15)] md:drop-shadow-[0_15px_25px_rgba(255,255,255,0.2)]">
+              <div 
+                className="h-20 md:h-28 w-64 md:w-80 bg-white opacity-100"
+                style={{
+                  WebkitMaskImage: `url("/asset/our story/alex sign.png")`,
+                  WebkitMaskSize: 'contain',
+                  WebkitMaskRepeat: 'no-repeat',
+                  WebkitMaskPosition: 'left'
+                }}
               />
             </div>
           </div>
 
-          {/* Right Image Frame (No Background, 3D Floating) */}
-          <div className="flex-1 relative w-full h-[600px] md:h-[700px] max-w-md lg:max-w-xl mx-auto z-10">
+          {/* Center Image Frame */}
+          <div className="relative w-full lg:w-[30%] h-[500px] lg:h-[600px] flex justify-center items-end z-10 mt-0 lg:mt-8">
+             <img 
+               ref={imageRef}
+               src="https://res.cloudinary.com/dicb5gkab/image/upload/v1774725703/medium-shot-professional-chef-posing_rwpzbw.png" 
+               alt="Chef Alexander Pierce" 
+               className="w-auto h-full max-h-[100%] object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] relative z-10"
+             />
              
-             <div className="absolute inset-x-0 bottom-0 pointer-events-none flex justify-center h-full items-end">
-                <img 
-                  ref={imageRef}
-                  src="https://res.cloudinary.com/dicb5gkab/image/upload/v1774725703/medium-shot-professional-chef-posing_rwpzbw.png" 
-                  alt="Chef Alexander Pierce" 
-                  className="w-[120%] h-auto max-h-[110%] object-contain filter contrast-[1.1] grayscale-[0.2] drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)]"
-                />
-             </div>
+             {/* Fade out bottom cut-off of the image */}
+             <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black via-black/80 to-transparent z-20 pointer-events-none" />
 
-             {/* Dynamic Rotating Seal */}
-             <div className="absolute -bottom-10 -left-10 md:-bottom-16 md:-left-16 w-32 h-32 md:w-48 md:h-48 z-40 rounded-full border border-gold-500/30 bg-black/60 backdrop-blur-md flex items-center justify-center shadow-2xl">
+             {/* Circular Badge */}
+             <div className="absolute bottom-[15%] lg:bottom-[25%] left-[-10px] md:left-[10%] lg:left-[-30px] w-36 h-36 md:w-40 md:h-40 z-30 rounded-full border border-[#d4af37]/30 flex items-center justify-center mix-blend-screen bg-black/40 backdrop-blur-sm">
                 <svg viewBox="0 0 100 100" className="rotating-seal-svg absolute w-full h-full scale-[0.85]">
-                  <path id="textCircle" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="transparent" />
-                  <text className="text-[14px] font-sans font-medium uppercase fill-white tracking-[0.2em]">
-                    <textPath href="#textCircle" startOffset="0%">
-                       OBSIDIAN • CULINARY EXCELLENCE •
+                  <path id="textCircleChef" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="transparent" />
+                  <text className="text-[12px] font-serif font-medium uppercase fill-[#d4af37] tracking-[0.2em]">
+                    <textPath href="#textCircleChef" startOffset="0%">
+                       MICHELIN STAR • 3X WINNER •
                     </textPath>
                   </text>
                 </svg>
-                {/* Inner Dots */}
-                <div className="absolute inset-0 border-[0.5px] border-white/10 rounded-full scale-[0.65]" />
-                <div className="absolute flex items-center justify-center w-full h-full">
-                  <span className="text-gold-500 font-serif text-3xl md:text-5xl font-bold pr-1 -mt-1 tracking-tighter mix-blend-screen drop-shadow-md">OB.</span>
+                <div className="absolute inset-0 border border-[#d4af37]/10 rounded-full scale-[0.7]" />
+                <div className="absolute flex items-center justify-center text-[#d4af37] font-serif text-3xl font-bold">
+                  08
                 </div>
              </div>
+          </div>
+
+          {/* Right Text Content */}
+          <div className="w-full lg:w-[35%] flex flex-col justify-center items-center lg:items-start text-center lg:text-left z-20 pl-0 lg:pl-12 pb-16 lg:pb-0">
+            <p className="chef-reveal font-serif text-[#e6d5b8] text-[26px] md:text-[32px] leading-[1.4] italic max-w-[320px] mb-8">
+              "Perfection is not a goal, it's our standard."
+            </p>
+            
+            {/* Golden Signature Mask - Right */}
+            <div className="chef-reveal w-full max-w-[320px] flex justify-center lg:justify-start pr-0">
+              <div 
+                className="h-10 md:h-12 w-32 bg-[#d4af37] opacity-90"
+                style={{
+                  WebkitMaskImage: `url("/asset/our story/Asign.png")`,
+                  WebkitMaskSize: 'contain',
+                  WebkitMaskRepeat: 'no-repeat',
+                  WebkitMaskPosition: 'left'
+                }}
+              />
+            </div>
           </div>
 
         </div>

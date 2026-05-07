@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
 import Footer from '../components/sections/Footer';
 
 const Reservation = () => {
@@ -47,15 +45,7 @@ const Reservation = () => {
     { id: 'm6', name: 'Chocolate Gold Lava Cake', price: 65, image: 'https://res.cloudinary.com/dicb5gkab/image/upload/v1778055101/ChatGPT_Image_May_6_2026_01_25_36_PM_4_-Photoroom_wy0w0p.png' },
   ];
 
-  useLayoutEffect(() => {
-    let ctx = gsap.context(() => {
-      gsap.fromTo('.anim-fade-up', 
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.2, stagger: 0.1, ease: 'expo.out', delay: 0.2 }
-      );
-    }, containerRef);
-    return () => ctx.revert();
-  }, []);
+
 
   useEffect(() => {
     // Initialize date to today
@@ -162,7 +152,7 @@ const Reservation = () => {
       <div className="container mx-auto px-6 lg:px-16 pt-32 pb-24 relative z-10 min-h-screen flex flex-col justify-center">
         
         {/* Header */}
-        <div className="mb-16 text-center anim-fade-up">
+        <div className="mb-16 text-center">
           <p className="text-gold-500 tracking-[0.4em] text-[10px] md:text-xs uppercase font-sans mb-4">
             Obsidian Reservations
           </p>
@@ -176,26 +166,19 @@ const Reservation = () => {
 
         {/* Progress Bar */}
         {step < 5 && (
-          <div className="w-full max-w-3xl mx-auto h-px bg-white/10 mb-16 relative anim-fade-up">
-            <motion.div 
-              className="absolute top-0 left-0 h-full bg-gold-500"
-              initial={{ width: `${((step - 1) / 3) * 100}%` }}
-              animate={{ width: `${((step - 1) / 3) * 100}%` }}
-              transition={{ duration: 0.5, ease: 'easeInOut' }}
+          <div className="w-full max-w-3xl mx-auto h-px bg-white/10 mb-16 relative">
+            <div 
+              className="absolute top-0 left-0 h-full bg-gold-500 transition-all duration-500 ease-in-out"
+              style={{ width: `${((step - 1) / 3) * 100}%` }}
             />
           </div>
         )}
 
-        <div className={`mx-auto w-full anim-fade-up transition-all duration-500 ${step === 3 ? 'max-w-5xl' : 'max-w-3xl'}`}>
-          <AnimatePresence mode="wait">
+        <div className={`mx-auto w-full transition-all duration-500 ${step === 3 ? 'max-w-5xl' : 'max-w-3xl'}`}>
             
             {/* ── STEP 1: DATE, TIME & GUESTS ────────────────────────────── */}
             {step === 1 && (
-              <motion.div 
-                key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+              <div 
                 className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20"
               >
                 {/* LEFT: Custom Inline Calendar */}
@@ -288,16 +271,12 @@ const Reservation = () => {
                   </div>
 
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {/* ── STEP 2: SEATING & EXPERIENCE ───────────────────────────── */}
             {step === 2 && (
-              <motion.div 
-                key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+              <div 
                 className="space-y-12"
               >
                 {/* Seating Preference */}
@@ -350,16 +329,12 @@ const Reservation = () => {
                     ))}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {/* ── STEP 3: PRE-ORDER DISHES ───────────────────────────── */}
             {step === 3 && (
-              <motion.div 
-                key="step3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+              <div 
                 className="space-y-8"
               >
                 <div className="mb-12 text-center">
@@ -413,16 +388,12 @@ const Reservation = () => {
                     </span>
                   </div>
                 )}
-              </motion.div>
+              </div>
             )}
 
             {/* ── STEP 4: CONTACT DETAILS ────────────────────────────────── */}
             {step === 4 && (
-              <motion.div 
-                key="step4"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+              <div 
                 className="space-y-12"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -454,15 +425,12 @@ const Reservation = () => {
                     placeholder="Let us know of any dietary restrictions..."
                   />
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {/* ── STEP 5: SUCCESS ────────────────────────────────────────── */}
             {step === 5 && (
-              <motion.div 
-                key="step5"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+              <div 
                 className="text-center py-20"
               >
                 <div className="w-24 h-24 rounded-full border border-gold-500/50 flex items-center justify-center mx-auto mb-10 bg-gold-500/10">
@@ -480,14 +448,12 @@ const Reservation = () => {
                 >
                   Return to Home
                 </button>
-              </motion.div>
+              </div>
             )}
-
-          </AnimatePresence>
 
           {/* Navigation Buttons */}
           {step < 5 && (
-            <div className="flex justify-between items-center mt-16 pt-10 border-t border-white/10 anim-fade-up">
+            <div className="flex justify-between items-center mt-16 pt-10 border-t border-white/10">
               <button 
                 onClick={handlePrev}
                 className={`text-xs uppercase tracking-[0.3em] font-sans transition-colors ${step === 1 ? 'opacity-0 pointer-events-none' : 'text-white/50 hover:text-white'}`}

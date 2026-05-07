@@ -29,7 +29,7 @@ const Hero = ({ isEntered }) => {
                 className="overflow-hidden mb-6"
              >
                 <p className="text-[10px] md:text-xs font-medium text-gold-500/80 tracking-[0.5em] uppercase font-sans">
-                    EST. 2018 - NEW YORK
+                    EST. 1998 - NEW YORK
                 </p>
              </motion.div>
 

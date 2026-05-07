@@ -148,8 +148,14 @@ const ReservationBanner = () => {
         {/* Right Side: Oversized CTA */}
         <div className="rs-fade-up w-full lg:w-auto flex justify-start lg:justify-end">
             <button 
-              onClick={(e) => e.preventDefault()}
-              className="group relative w-44 h-44 md:w-52 md:h-52 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-sm text-white uppercase tracking-[0.3em] text-[10px] md:text-[11px] transition-all duration-700 font-light overflow-hidden hover:border-gold-500/40 flex flex-col items-center justify-center hover:scale-[1.05] active:scale-[0.97] shadow-[0_0_80px_rgba(0,0,0,0.5)]"
+              onClick={(e) => {
+                e.preventDefault();
+                setTimeout(() => {
+                  window.scrollTo({ top: 0, behavior: 'instant' });
+                  window.location.href = '/reservations';
+                }, 300);
+              }}
+              className="group relative w-44 h-44 md:w-52 md:h-52 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-sm text-white uppercase tracking-[0.3em] text-[10px] md:text-[11px] transition-all duration-700 font-light overflow-hidden hover:border-gold-500/40 flex flex-col items-center justify-center hover:scale-[1.05] active:scale-[0.95] shadow-[0_0_80px_rgba(0,0,0,0.5)]"
             >
               <div className="relative z-10 flex flex-col items-center gap-2">
                  <span className="group-hover:text-white transition-colors duration-500">Secure</span>
