@@ -1,91 +1,103 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const PHILOSOPHY_CARDS = [
-  {
-    title: 'FIRE',
-    text: 'The spark of passion. We cook with intensity, intuition, and the pursuit of perfection.',
-    icon: (
-      <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" className="mb-6 text-[#d4af37]">
-        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'GOLD',
-    text: 'A symbol of rarity and reverence. We use only the finest ingredients, handled with honor and care.',
-    icon: (
-      <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" className="mb-6 text-[#d4af37]">
-        <path d="M12 4C14.2 4 16 5.8 16 8C16 10.2 14.2 12 12 12C9.8 12 8 10.2 8 8C8 5.8 9.8 4 12 4Z" />
-        <path d="M7 11C9.2 11 11 12.8 11 15C11 17.2 9.2 19 7 19C4.8 19 3 17.2 3 15C3 12.8 4.8 11 7 11Z" />
-        <path d="M17 11C19.2 11 21 12.8 21 15C21 17.2 19.2 19 17 19C14.8 19 13 17.2 13 15C13 12.8 14.8 11 17 11Z" />
-        <circle cx="12" cy="8" r="2" fill="currentColor" fillOpacity="0.2" />
-        <circle cx="7" cy="15" r="2" fill="currentColor" fillOpacity="0.2" />
-        <circle cx="17" cy="15" r="2" fill="currentColor" fillOpacity="0.2" />
-      </svg>
-    ),
-  },
-  {
-    title: 'SILENCE',
-    text: 'In silence, details speak louder. We create space for connection, reflection, and wonder.',
-    icon: (
-      <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" className="mb-6 text-[#d4af37]">
-        <circle cx="12" cy="12" r="8" />
-        <circle cx="12" cy="12" r="10" strokeOpacity="0.4" />
-        <circle cx="12" cy="12" r="6" strokeOpacity="0.2" fill="currentColor" fillOpacity="0.1" />
-      </svg>
-    ),
-  },
-];
-
 const StoryPhilosophy = () => {
   return (
-    <section className="relative flex w-full justify-center border-t border-white/[0.05] bg-[#030303] py-20 md:py-32">
-      <div className="container mx-auto flex flex-col items-center px-5 sm:px-6 md:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, margin: '-100px' }}
-          transition={{ duration: 1, ease: 'easeOut' }}
-          className="mb-14 flex flex-col items-center md:mb-24"
-        >
-          <div className="flex items-center gap-6 mb-2">
-            <h2 className="font-serif text-[2rem] uppercase tracking-[0.14em] text-[#e6d5b8] md:text-[40px]">
-              Our Philosophy
-            </h2>
-          </div>
-          <div className="mt-6 h-px w-20 bg-[#a68a56]" />
-        </motion.div>
-
-        <div className="grid w-full max-w-[1400px] grid-cols-1 gap-4 md:grid-cols-3 md:gap-4">
-          {PHILOSOPHY_CARDS.map((card, index) => (
-            <motion.div
-              key={card.title}
-              initial={{ opacity: 0, y: 30 }}
+    <section className="py-24 lg:py-36 bg-[#030303] overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
+         
+         {/* Premium Header */}
+         <div className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, margin: '-100px' }}
-              transition={{ duration: 1, delay: index * 0.2, ease: 'easeOut' }}
-              className={`group relative flex min-h-[320px] flex-col items-center overflow-hidden rounded-[28px] border border-white/[0.05] bg-white/[0.02] px-6 py-10 text-center md:min-h-[380px] md:rounded-none md:border-transparent md:bg-transparent md:p-12 lg:p-16 ${
-                index !== 2 ? 'md:border-r md:border-white/[0.03]' : ''
-              }`}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+              className="max-w-2xl"
             >
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,175,55,0.08),transparent_60%)] opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
-              <div className="absolute top-0 left-[20%] right-[20%] h-[2px] origin-center scale-x-0 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent transition-transform duration-700 group-hover:scale-x-100" />
-
-              <div className="mb-6 transform opacity-80 transition-all duration-700 group-hover:-translate-y-3 group-hover:scale-110 group-hover:opacity-100 group-hover:drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]">
-                {card.icon}
-              </div>
-
-              <h4 className="relative z-10 mb-5 font-serif text-[1.65rem] uppercase tracking-[0.13em] text-[#e6d5b8] transition-colors duration-500 group-hover:text-[#d4af37] md:text-[28px]">
-                {card.title}
-              </h4>
-
-              <p className="relative z-10 max-w-[280px] text-[15px] leading-8 text-white/60 md:text-[17px] md:leading-[2]">
-                {card.text}
-              </p>
+               <span className="text-[#d4af37] tracking-[0.4em] text-xs uppercase mb-4 block font-bold">Core Values</span>
+               <h2 className="font-serif text-5xl md:text-7xl text-white leading-tight">The Philosophy <br/><span className="text-white/40 italic">of Taste</span></h2>
             </motion.div>
-          ))}
-        </div>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="md:max-w-sm pb-2"
+            >
+               <p className="text-white/50 text-sm leading-relaxed font-light">
+                 It is not just about the ingredients. It is the ritual, the unwavering respect for tradition, and the courage to innovate.
+               </p>
+            </motion.div>
+         </div>
+
+         {/* Modern Premium Bento Grid */}
+         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6">
+           
+           {/* Box 1 (Tall Image) */}
+           <motion.div 
+             initial={{ opacity: 0, scale: 0.95 }}
+             whileInView={{ opacity: 1, scale: 1 }}
+             viewport={{ once: true }}
+             transition={{ duration: 0.8 }}
+             className="md:col-span-2 relative overflow-hidden group border border-white/10 bg-black h-[400px] md:h-[624px] rounded-[30px]"
+           >
+              <img src="/asset/our story/place1.png" alt="Precision" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-70 transition-all duration-1000 group-hover:scale-105" />
+              
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-8 md:p-10 flex flex-col justify-end">
+                 <div className="w-12 h-[2px] bg-[#d4af37] mb-6"></div>
+                 <h3 className="font-serif text-3xl md:text-5xl text-white mb-4">Precision & Fire</h3>
+                 <p className="text-sm text-gray-300 max-w-md font-light leading-relaxed">
+                   Every cut, every temperature, every plate is calculated to deliver absolute perfection. Precision is the language of our kitchen, spoken through the intensity of the flame.
+                 </p>
+              </div>
+           </motion.div>
+
+           <div className="md:col-span-3 flex flex-col gap-4 md:gap-6">
+               
+               {/* Box 2 (Text Heavy & Abstract) */}
+               <motion.div 
+                 initial={{ opacity: 0, scale: 0.95 }}
+                 whileInView={{ opacity: 1, scale: 1 }}
+                 viewport={{ once: true }}
+                 transition={{ duration: 0.8, delay: 0.2 }}
+                 className="relative overflow-hidden group border border-white/10 bg-[#0a0a0a] hover:bg-[#0f0f0f] transition-colors duration-500 h-[300px] rounded-[30px] flex items-center p-8 md:p-12"
+               >
+                  <div className="relative z-10 w-full">
+                     <span className="text-[#d4af37] text-xs tracking-widest uppercase mb-2 block">The Commitment</span>
+                     <h3 className="font-serif text-4xl md:text-5xl text-white mb-4 group-hover:text-[#d4af37] transition-colors duration-500">Relentless Passion</h3>
+                     <p className="text-base text-gray-400 max-w-xl font-light leading-relaxed">
+                       Cooking is not a job; it is a calling. Our culinary team lives for the heat of the kitchen and the satisfaction of a flawless service. We pour our soul into every reduction, every garnish, every bite.
+                     </p>
+                  </div>
+                  {/* Huge background text watermark */}
+                  <div className="absolute right-[-5%] bottom-[-20%] opacity-[0.02] group-hover:opacity-[0.04] transition-opacity duration-700 pointer-events-none select-none">
+                     <h1 className="font-cursive text-[180px] leading-none text-white">Passion</h1>
+                  </div>
+               </motion.div>
+
+               {/* Box 3 (Wide Image) */}
+               <motion.div 
+                 initial={{ opacity: 0, scale: 0.95 }}
+                 whileInView={{ opacity: 1, scale: 1 }}
+                 viewport={{ once: true }}
+                 transition={{ duration: 0.8, delay: 0.4 }}
+                 className="relative overflow-hidden group border border-white/10 bg-black h-[300px] rounded-[30px]"
+               >
+                  <img src="/asset/our story/place3.png" alt="Ingredients" className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-all duration-1000 group-hover:scale-105" />
+                  
+                  <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-center items-start bg-black/20">
+                     <div className="w-12 h-[2px] bg-[#d4af37] mb-6"></div>
+                     <h3 className="font-serif text-4xl text-white mb-4">Uncompromised Quality</h3>
+                     <p className="text-base text-gray-200 max-w-xl font-light leading-relaxed">
+                       We partner with local artisans and sustainable farms to ensure that only the purest, most flavorful ingredients cross our threshold. Quality is our gold standard.
+                     </p>
+                  </div>
+               </motion.div>
+
+           </div>
+
+         </div>
       </div>
     </section>
   );
